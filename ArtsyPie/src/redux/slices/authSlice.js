@@ -7,6 +7,7 @@ import axiosClient from '../../api/axiosClient';
 export const login = createAsyncThunk(
   'auth/login',
   async (payload, { rejectWithValue }) => {
+    console.log('--- Đang gửi request Login với payload:', payload);
     try {
       const response = await axiosClient.post('/auth/login', payload);
       return response.data;
@@ -40,6 +41,34 @@ export const register = createAsyncThunk(
   }
 );
 
+//  Forgot Password
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      // Giả sử API endpoint là '/auth/forgot-password'
+      const response = await axiosClient.post('/auth/forgot-password', { email });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Có lỗi xảy ra');
+    }
+  }
+);
+
+// Reset Password
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async (payload, { rejectWithValue }) => {
+    try {
+      // Giả sử API endpoint là '/auth/reset-password'
+      const response = await axiosClient.post('/auth/reset-password', payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Không thể đặt lại mật khẩu');
+    }
+  }
+);
+
 
 // 🔹 SLICE
 const authSlice = createSlice({
@@ -52,13 +81,17 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
+    restoreToken(state, action) {
+      state.token = action.payload.token;
+      state.user = action.payload.user; // Bạn có thể muốn lưu user vào AsyncStorage luôn
+    },
     logout(state) {
       state.user = null;
       state.token = null;
       state.success = null;
       state.error = null;
-      // Xóa token khỏi AsyncStorage
       AsyncStorage.removeItem('userToken');
+      AsyncStorage.removeItem('userData'); // Xóa cả user data nếu có
     },
     clearMessage(state) {
       state.success = null;
@@ -78,12 +111,13 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.success = 'Đăng nhập thành công';
-        // Lưu token vào AsyncStorage
+        // Lưu cả token và user
         AsyncStorage.setItem('userToken', action.payload.token);
+        AsyncStorage.setItem('userData', JSON.stringify(action.payload.user));
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = 'Email hoặc mật khẩu không chính xác';
       });
 
     // 🔹 REGISTER
@@ -101,8 +135,40 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+      
+    // FORGOT PASSWORD
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload?.message || 'Yêu cầu đã được gửi';
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+      
+    // RESET PASSWORD
+    builder
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload?.message || 'Mật khẩu đã được thay đổi thành công';
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { logout, clearMessage } = authSlice.actions;
+export const { restoreToken, logout, clearMessage } = authSlice.actions;
 export default authSlice.reducer;

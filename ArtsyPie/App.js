@@ -9,7 +9,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { store } from './src/redux/store';
 // Navigation
 import MainNavigator from './src/navigation/MainNavigator';
-
 // Font constant
 import { FONTS } from './src/theme/fonts';
 
@@ -18,6 +17,19 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [hasSeenIntro, setHasSeenIntro] = useState(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  
+  // THÊM ĐOẠN CODE DEBUG NÀY VÀO
+  useEffect(() => {
+    const clearAuthDataForDebug = async () => {
+      console.log('DEBUG: Xóa token và user data khi khởi động...');
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userData');
+      console.log('DEBUG: Đã xóa xong.');
+    };
+    if (__DEV__) {
+      clearAuthDataForDebug();
+    }
+  }, []);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -56,13 +68,6 @@ export default function App() {
     };
   }, [fontsLoaded]);
   //
-  useEffect(() => {
-    const resetIntro = async () => {
-      await AsyncStorage.removeItem('hasSeenIntro');
-      console.log('Intro reset done');
-    };
-    resetIntro();
-  }, []);
   if (hasSeenIntro === null || !fontsLoaded) return null;
   return (
     <Provider store={store}>

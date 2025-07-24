@@ -1,114 +1,173 @@
-// File: src/screens/Register/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../theme/colors';
 import { FONTS } from '../../theme/fonts';
-const styles = StyleSheet.create({
+
+export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    padding: 24,
-    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    backgroundColor: '#fff',
+    justifyContent: 'flex-start'
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    marginBottom: 6,
     color: COLORS.primary,
-    marginBottom: 8,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: COLORS.textMuted,
-    marginBottom: 32,
-    textAlign: 'center',
+    color: COLORS.secondary,
+    marginBottom: 25,
+    fontFamily: FONTS.medium,
   },
-  input: {
+  label: {
+    fontSize: 14,
+    fontFamily: FONTS.semibold,
+    marginBottom: 4,
+    color: '#333',
+  },
+  inputWrapper: {
+    position: 'relative',
+    marginBottom: 20,
+  },
+  inputWithIcon: {
     borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 12,
+    borderColor: '#ccc',
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    marginBottom: 16,
-    backgroundColor: COLORS.lightBackground,
-    color: COLORS.darkText,
+    paddingLeft: 12,
+    paddingRight: 40,
+    borderRadius: 8,
+    fontSize: 14,
+    color: '#000',
   },
-  // Terms and Conditions styles
+  iconWrapper: {
+    position: 'absolute',
+    right: 12,
+    top: '50%',
+    transform: [{ translateY: -10 }],
+  },
+  inputValid: {
+    borderColor: '#4CAF50',
+  },
+  inputInvalid: {
+    borderColor: '#f44336',
+  },
+  errorText: {
+    color: '#f44336',
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 8,
+  },
   termsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 4,
+    marginBottom: 25,
+    flexWrap: 'wrap',
   },
   checkbox: {
-    marginRight: 12,
-  },
-  checkboxInner: {
     width: 20,
     height: 20,
-    borderWidth: 2,
-    borderColor: COLORS.border,
-    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
   },
   checkboxChecked: {
     backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
   },
   checkmark: {
-    color: COLORS.white,
-    fontSize: 12,
+    color: '#fff',
     fontWeight: 'bold',
   },
   termsText: {
     flex: 1,
-    fontSize: 14,
-    color: COLORS.textMuted,
-    fontFamily: FONTS.regular,
+    color: '#333',
+    fontSize: 13,
   },
   termsLink: {
     color: COLORS.primary,
-    fontFamily: FONTS.semibold,
     textDecorationLine: 'underline',
+    fontFamily: FONTS.bold,
   },
   button: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 14,
-    borderRadius: 14,
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 8,
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
   },
   buttonText: {
-    color: COLORS.white,
+    color: '#fff',
+    fontFamily: FONTS.bold,
     fontSize: 16,
-    fontWeight: '600',
+  },
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ccc',
+  },
+  orText: {
+    marginHorizontal: 10,
+    color: '#666',
+    fontSize: 13,
+    fontFamily: FONTS.bold,
+  },
+  socialButtonWhite: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    marginBottom: 12,
+  },
+  socialButtonBlue: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#1877F2',
+    marginBottom: 15,
+  },
+  socialIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    marginRight: 12,
+  },
+  socialTextBlack: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  socialTextWhite: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
   },
   bottomText: {
-    marginTop: 24,
-    fontSize: 14,
     textAlign: 'center',
-    color: COLORS.textMuted,
+    color: '#333',
+    fontSize: 13,
     fontFamily: FONTS.regular,
   },
   link: {
     color: COLORS.primary,
-    fontFamily: FONTS.semibold,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  successText: {
-    color: 'green',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 8,
+    fontFamily: FONTS.bold,
   },
 });
-
-export default styles;
-

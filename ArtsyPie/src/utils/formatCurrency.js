@@ -1,8 +1,14 @@
-export const formatCurrency = (number) => {
+export const formatCurrency = (amount) => {
+  if (typeof amount !== 'number') {
+    return '0 VNĐ';
+  }
+  
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
-  }).format(number);
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
 };
 
 
