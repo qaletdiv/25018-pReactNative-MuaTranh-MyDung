@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Switch } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Slider from '@react-native-community/slider';
 
 export default function SearchFilterModal({ visible, onClose, onApply, filters = {} }) {
@@ -8,13 +8,13 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
   const [selectedSizes, setSelectedSizes] = useState(filters.sizes || []);
   const [selectedOrientations, setSelectedOrientations] = useState(filters.orientations || []);
   const [priceRange, setPriceRange] = useState(filters.priceRange || [0, 20000000]);
-  const [sortOption, setSortOption] = useState(filters.sort || 'Mới nhất');
+  const [sortOption, setSortOption] = useState(filters.sort || 'Newest');
 
-  const paintingTypes = ['Sơn dầu', 'Sơn mài', 'Acrylic', 'Màu nước'];
-  const paintingStyles = ['Trừu tượng', 'Hiện thực', 'Lập thể', 'Ấn tượng', 'Tối giản'];
-  const paintingSizes = ['Nhỏ', 'Vừa', 'Lớn'];
-  const paintingOrientations = ['Ngang', 'Dọc', 'Vuông'];
-  const sortOptions = ['Mới nhất', 'Giá thấp đến cao', 'Giá cao đến thấp'];
+  const paintingTypes = ['Oil Painting', 'Lacquer', 'Acrylic', 'Watercolor'];
+  const paintingStyles = ['Abstract', 'Realistic', 'Cubist', 'Impressionist', 'Minimalist'];
+  const paintingSizes = ['Small', 'Medium', 'Large'];
+  const paintingOrientations = ['Landscape', 'Portrait', 'Square'];
+  const sortOptions = ['Newest', 'Price: Low to High', 'Price: High to Low'];
 
   const toggleSelection = (item, array, setArray) => {
     if (array.includes(item)) {
@@ -42,11 +42,16 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
     setSelectedSizes([]);
     setSelectedOrientations([]);
     setPriceRange([0, 20000000]);
-    setSortOption('Mới nhất');
+    setSortOption('Newest');
   };
 
-  const formatPrice = (value) => {
-    return `${(value / 1000000).toFixed(0)}M VNĐ`;
+  const formatPrice = (price) => {
+    if (price >= 1000000) {
+      return `${(price / 1000000).toFixed(1)}M`;
+    } else if (price >= 1000) {
+      return `${(price / 1000).toFixed(0)}K`;
+    }
+    return price.toString();
   };
 
   return (
@@ -54,7 +59,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Bộ lọc tìm kiếm</Text>
+            <Text style={styles.headerTitle}>Filter Search</Text>
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.closeButton}>✕</Text>
             </TouchableOpacity>
@@ -63,7 +68,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Loại hình */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Loại hình</Text>
+              <Text style={styles.sectionTitle}>Types</Text>
               <View style={styles.optionsContainer}>
                 {paintingTypes.map((type) => (
                   <TouchableOpacity
@@ -87,7 +92,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
 
             {/* Phong cách */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Phong cách</Text>
+              <Text style={styles.sectionTitle}>Styles</Text>
               <View style={styles.optionsContainer}>
                 {paintingStyles.map((style) => (
                   <TouchableOpacity
@@ -160,9 +165,9 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
             {/* Khoảng giá */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Khoảng giá</Text>
-              <View style={styles.priceContainer}>
-                <Text style={styles.priceText}>
-                  {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+              <View style={styles.priceRangeContainer}>
+                <Text style={styles.priceRangeText}>
+                  {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])} VNĐ
                 </Text>
                 <Slider
                   style={styles.slider}
@@ -219,7 +224,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: '#00000080',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
@@ -271,8 +276,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
   selectedOption: {
-    backgroundColor: '#FF6B6B',
-    borderColor: '#FF6B6B',
+    backgroundColor: '#AA7F60',
+    borderColor: '#AA7F60',
   },
   optionText: {
     fontSize: 14,
@@ -282,22 +287,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  priceContainer: {
+  priceRangeContainer: {
     paddingHorizontal: 10,
+    paddingVertical: 15,
   },
-  priceText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+  priceRangeText: {
+    fontSize: 14,
+    color: '#666',
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   slider: {
-    width: '100%',
     height: 40,
   },
   sliderThumb: {
-    backgroundColor: '#FF6B6B',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#AA7F60',
   },
   footer: {
     flexDirection: 'row',
@@ -321,7 +328,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 15,
     borderRadius: 12,
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#AA7F60',
     alignItems: 'center',
   },
   applyButtonText: {

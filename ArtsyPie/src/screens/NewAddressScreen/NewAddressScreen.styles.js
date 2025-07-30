@@ -1,0 +1,203 @@
+import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS } from '../../theme/colors';
+
+const { width, height } = Dimensions.get('window');
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  mapContainer: {
+    height: height * 0.4,
+    backgroundColor: '#e0e0e0',
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mapPlaceholder: {
+    alignItems: 'center',
+  },
+  mapText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666',
+    marginTop: 8,
+  },
+  mapSubtext: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 4,
+  },
+  mapPin: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -12,
+    marginTop: -12,
+  },
+  formContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    marginTop: -20,
+  },
+  formHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 8,
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  dropdownInput: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#333',
+  },
+  dropdownButton: {
+    padding: 12,
+    borderLeftWidth: 1,
+    borderLeftColor: '#e0e0e0',
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#333',
+    backgroundColor: '#fff',
+    textAlignVertical: 'top',
+    minHeight: 80,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  checkboxText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  addButtonDisabled: {
+    backgroundColor: '#e0e0e0',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  addButtonTextDisabled: {
+    color: '#999',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successModal: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    marginHorizontal: 40,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  successIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#4CAF50',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 8,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  thanksButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+  },
+  thanksButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+}); 

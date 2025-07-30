@@ -20,7 +20,6 @@ export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.auth);
 
-  // THÊM useEffect NÀY ĐỂ DỌN LỖI KHI VÀO MÀN HÌNH
   useEffect(() => {
     dispatch(clearMessage());
   }, []);
@@ -52,6 +51,8 @@ export default function LoginScreen({ navigation }) {
 
   useEffect(() => {
     if (success) {
+      navigation.replace('MainTabs');
+      dispatch(clearMessage());
     }
     if (error) {
       Alert.alert('Đăng nhập thất bại', error);

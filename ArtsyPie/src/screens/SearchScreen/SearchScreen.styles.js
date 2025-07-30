@@ -1,21 +1,23 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS } from '../../theme/colors';
+
+const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 50,
     backgroundColor: '#fff',
   },
   section: {
     marginTop: 24,
+    backgroundColor: '#fff',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 12,
     color: '#333',
+    paddingHorizontal: 16,
   },
   searchItem: {
     paddingVertical: 10,
@@ -31,7 +33,8 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 16,
-    paddingHorizontal: 4,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
   },
   resultsTitle: {
     fontSize: 18,
@@ -52,10 +55,14 @@ export default StyleSheet.create({
     fontWeight: '600',
   },
   resultsContainer: {
+    paddingHorizontal: 16,
     paddingBottom: 20,
+    backgroundColor: '#fff',
   },
   row: {
     justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    marginBottom: 12,
   },
   noResultsContainer: {
     flex: 1,

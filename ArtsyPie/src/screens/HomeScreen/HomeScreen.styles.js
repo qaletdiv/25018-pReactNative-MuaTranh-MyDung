@@ -20,6 +20,18 @@ export default StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  seeAllText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontFamily: FONTS.semiBold,
+  },
   titleRow: {
   flexDirection: 'row',
   alignItems: 'center',

@@ -1,28 +1,24 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
+import ArtCard from '../ArtCard/ArtCard';
 import styles from './PopularSearches.styles';
 
-export default function PopularSearches({ data = [] }) {
+export default function PopularSearches({ data = [], onArtCardPress }) {
+  const renderArtCard = ({ item }) => (
+    <ArtCard item={item} onPress={onArtCardPress} compact={true} />
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Popular Search</Text>
-
+      <Text style={styles.title}>Popular Searches</Text>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.itemContainer}>
-            <Image source={item.image} style={styles.image} />
-            <View style={styles.info}>
-              <Text style={styles.name}>{item.title}</Text>
-              <Text style={styles.searchCount}>{item.searchCount} Search today</Text>
-            </View>
-            <View style={[styles.tag, { backgroundColor: item.tagColor }]}>
-              <Text style={styles.tagText}>{item.tag}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        renderItem={renderArtCard}
+        contentContainerStyle={{ paddingBottom: 16 }}
       />
     </View>
   );

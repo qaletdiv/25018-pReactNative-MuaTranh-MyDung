@@ -3,6 +3,9 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import styles from './LastSearches.styles';
 
 export default function LastSearches({ searches = [], onClear, onRemove }) {
+  // Giữ 10 kết quả gần nhất
+  const recentSearches = searches.slice(0, 10);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -13,14 +16,15 @@ export default function LastSearches({ searches = [], onClear, onRemove }) {
       </View>
 
       <FlatList
-        data={searches}
+        data={recentSearches}
         keyExtractor={(item, index) => index.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
+        numColumns={3}
+        columnWrapperStyle={styles.row}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <View style={styles.chip}>
-            <Text style={styles.chipText}>{item}</Text>
-            <TouchableOpacity onPress={() => onRemove(index)} style={styles.chipRemove}>
+            <Text style={styles.chipText} numberOfLines={1}>{item}</Text>
+            <TouchableOpacity onPress={() => onRemove(item)} style={styles.chipRemove}>
               <Text style={styles.chipRemoveText}>×</Text>
             </TouchableOpacity>
           </View>

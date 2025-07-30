@@ -4,12 +4,12 @@ import { COLORS } from '../../theme/colors';
 export default StyleSheet.create({
   container: {
     marginBottom: 24,
+    marginHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
-    paddingHorizontal: 4,
+    marginBottom: 12,
   },
   title: {
     fontWeight: 'bold',
@@ -20,24 +20,31 @@ export default StyleSheet.create({
     color: COLORS.primary,
     fontWeight: '600',
   },
+  row: {
+    justifyContent: 'flex-start',
+    marginBottom: 8,
+  },
   chip: {
+    flex: 1,
     flexDirection: 'row',
     backgroundColor: '#f0f0f0',
     borderRadius: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 6,
-    marginRight: 8,
+    marginHorizontal: 2,
     alignItems: 'center',
+    maxWidth: '32%',
   },
   chipText: {
     color: '#555',
-    fontSize: 14,
+    fontSize: 12,
+    flex: 1,
   },
   chipRemove: {
-    marginLeft: 6,
+    marginLeft: 4,
   },
   chipRemoveText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#888',
     fontWeight: 'bold',
   },

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import LastSearches from '../../components/LastSearches/LastSearches';
 import PopularSearches from '../../components/PopularSearches/PopularSearches';
@@ -11,26 +12,41 @@ import styles from './SearchScreen.styles';
 
 export default function SearchScreen() {
   const navigation = useNavigation();
-  const [searchText, setSearchText] = useState('');
+  const route = useNavigation().getState().routes.find(r => r.name === 'SearchScreen');
+  const initialSearchText = route?.params?.initialSearchText || '';
+  const initialFilters = route?.params?.initialFilters || {};
+  
+  const [searchText, setSearchText] = useState(initialSearchText);
   const [searchResults, setSearchResults] = useState([]);
   const [lastSearches, setLastSearches] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [activeFilters, setActiveFilters] = useState({});
+  const [activeFilters, setActiveFilters] = useState(initialFilters);
   const [filteredResults, setFilteredResults] = useState([]);
 
   // const popularData = ['Tranh sơn dầu', 'Tranh phong cảnh', 'Tranh hiện đại'];
 
-  const handleSearch = (text) => {
-    setSearchText(text);
+  // Tự động search nếu có initialSearchText
+  useEffect(() => {
+    if (initialSearchText) {
+      handleSearchSubmit();
+    }
+  }, []);
 
-    if (text.trim() === '') {
+  // Hàm chỉ cập nhật text, không search ngay
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+  };
+
+  // Hàm thực hiện search khi nhấn Enter hoặc icon search
+  const handleSearchSubmit = () => {
+    if (searchText.trim() === '') {
       setSearchResults([]);
       setFilteredResults([]);
       return;
     }
 
     // Chuẩn hóa chuỗi tìm kiếm
-    const normalizedText = text.toLowerCase().normalize("NFC");
+    const normalizedText = searchText.toLowerCase().normalize("NFC");
 
     const results = artworksData.filter(
       (item) => {
@@ -46,8 +62,8 @@ export default function SearchScreen() {
     applyFilters(results, activeFilters);
 
     // Cập nhật lastSearches nếu không trùng lặp
-    if (!lastSearches.includes(text.trim())) {
-      setLastSearches([text.trim(), ...lastSearches].slice(0, 5));
+    if (!lastSearches.includes(searchText.trim())) {
+      setLastSearches([searchText.trim(), ...lastSearches].slice(0, 10));
     }
   };
 
@@ -84,13 +100,13 @@ export default function SearchScreen() {
     // Sắp xếp
     if (filters.sort) {
       switch (filters.sort) {
-        case 'Mới nhất':
+        case 'Newest':
           filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
           break;
-        case 'Giá thấp đến cao':
+        case 'Price: Low to High':
           filtered.sort((a, b) => a.price - b.price);
           break;
-        case 'Giá cao đến thấp':
+        case 'Price: High to Low':
           filtered.sort((a, b) => b.price - a.price);
           break;
         default:
@@ -115,11 +131,11 @@ export default function SearchScreen() {
   };
 
   const handleArtCardPress = (item) => {
-    Alert.alert('Thông tin tranh', `${item.title}\nNghệ sĩ: ${item.artist}\nGiá: ${item.price.toLocaleString()} VNĐ`);
+    navigation.navigate('ProductDetail', { item });
   };
 
   const renderArtCard = ({ item }) => (
-    <ArtCard item={item} onPress={handleArtCardPress} />
+    <ArtCard item={item} onPress={handleArtCardPress} compact={true} />
   );
 
   const renderSearchResults = () => {
@@ -140,9 +156,23 @@ export default function SearchScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderArtCard}
         numColumns={2}
-        columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.resultsContainer}
+        ListHeaderComponent={
+          <View style={styles.resultsHeader}>
+            <Text style={styles.resultsTitle}>
+              {dataToShow.length} sản phẩm
+            </Text>
+            <TouchableOpacity 
+              style={styles.filterButton}
+              onPress={() => setShowFilterModal(true)}
+            >
+              <Text style={styles.filterButtonText}>
+                Bộ lọc {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        }
       />
     );
   };
@@ -158,12 +188,13 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <SearchBar
         showBack
         editable
         searchText={searchText}
-        onChangeText={handleSearch}
+        onChangeText={handleSearchTextChange}
+        onSearch={handleSearchSubmit}
         onBackPress={() => navigation.goBack()}
       />
 
@@ -174,23 +205,10 @@ export default function SearchScreen() {
             onClear={handleClearLastSearches}
             onRemove={handleRemoveSearch}
           />
-          <PopularSearches data={artworksData} />
+          <PopularSearches data={artworksData} onArtCardPress={handleArtCardPress} />
         </>
       ) : (
         <>
-          <View style={styles.resultsHeader}>
-            <Text style={styles.resultsTitle}>
-              Kết quả tìm kiếm ({filteredResults.length})
-            </Text>
-            <TouchableOpacity 
-              style={styles.filterButton}
-              onPress={() => setShowFilterModal(true)}
-            >
-              <Text style={styles.filterButtonText}>
-                Bộ lọc {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
-              </Text>
-            </TouchableOpacity>
-          </View>
           {renderSearchResults()}
         </>
       )}
@@ -201,6 +219,6 @@ export default function SearchScreen() {
         onApply={handleFilterApply}
         filters={activeFilters}
       />
-    </View>
+    </SafeAreaView>
   );
 }

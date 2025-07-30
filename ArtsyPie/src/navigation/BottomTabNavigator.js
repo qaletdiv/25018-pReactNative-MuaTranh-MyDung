@@ -3,6 +3,9 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import SearchScreen from '../screens/SearchScreen/SearchScreen';
+import CartScreen from '../screens/CartScreen/CartScreen';
+import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
 
 import { View, Text } from 'react-native';
 
@@ -54,9 +57,16 @@ const BottomTabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="HomeScreen" component={HomeScreen} />
-      <Tab.Screen name="Saved" children={() => <Placeholder name="Saved" />} />
-      <Tab.Screen name="Cart" children={() => <Placeholder name="Cart" />} />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Saved" component={FavoritesScreen} />
+      <Tab.Screen 
+        name="Cart" 
+        component={CartScreen}
+        options={{
+          tabBarStyle: { display: 'none' }
+        }}
+      />
       <Tab.Screen name="Account" children={() => <Placeholder name="Account" />} />
     </Tab.Navigator>
   );

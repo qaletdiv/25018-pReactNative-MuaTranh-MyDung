@@ -6,9 +6,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 20,
+    backgroundColor: '#fff',
+    marginRight:16,
   },
   compactWrapper: {
     marginVertical: 10,
+   
   },
   backButton: {
     marginRight: 8,
@@ -40,6 +43,15 @@ export default StyleSheet.create({
   },
   iconLeft: {
     marginRight: 4,
+    color: COLORS.primary,
+  },
+  searchIconButton: {
+    padding: 4,
+    marginRight: 4,
+  },
+  filterButton: {
+    padding: 4,
+    marginLeft: 8,
     color: COLORS.primary,
   },
   iconRight: {

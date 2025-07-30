@@ -12,7 +12,9 @@ export default function SearchBar({
   placeholder = "Search for paintings...",
   searchText,
   onChangeText,
-  editable = false // kiểm soát có cho nhập hay không
+  onFilterPress, // Thêm prop để xử lý khi nhấn filter
+  onSearch, // Thêm prop để xử lý khi search
+  editable = true // Mặc định cho phép nhập
 }) {
   const navigation = useNavigation();
 
@@ -35,7 +37,11 @@ export default function SearchBar({
       )}
 
       <View style={[styles.container, compact && styles.compactContainer]}>
-        <Ionicons name="search" size={20} style={styles.iconLeft} />
+        {/* Icon Search - có thể click để search */}
+        <TouchableOpacity onPress={onSearch} style={styles.searchIconButton}>
+          <Ionicons name="search" size={20} style={styles.iconLeft} />
+        </TouchableOpacity>
+        
         <TextInput
           style={[styles.input, compact && styles.compactInput]}
           placeholder={placeholder}
@@ -44,15 +50,18 @@ export default function SearchBar({
           onChangeText={onChangeText}
           editable={editable}
           pointerEvents={editable ? 'auto' : 'none'}
+          onSubmitEditing={onSearch} 
+          returnKeyType="search"
         />
-        {/* {!compact && (
+
+        {/* Icon Filter ở góc phải */}
+        {/* <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
           <MaterialCommunityIcons
-            name="tune"
+            name="filter-variant"
             size={20}
-            color={styles.iconRight.color}
-            style={styles.iconRight}
+            color={styles.iconLeft.color}
           />
-        )} */}
+        </TouchableOpacity> */}
       </View>
 
       {!compact && (

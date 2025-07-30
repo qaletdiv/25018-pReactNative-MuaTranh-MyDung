@@ -28,7 +28,11 @@ export default function MainNavigator() {
       } catch (e) {
         console.error(e);
       }
-      setIsLoading(false);
+      
+      // Thêm delay 5 giây
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 5000);
     };
     bootstrapAsync();
   }, [dispatch]);
