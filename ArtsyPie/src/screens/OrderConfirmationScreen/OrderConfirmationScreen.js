@@ -9,15 +9,26 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './OrderConfirmationScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { COLORS } from '../../theme/colors';
+import { clearCart } from '../../redux/slices/cartSlice';
 
 export default function OrderConfirmationScreen() {
   const navigation = useNavigation();
   const route = useRoute();
+  const dispatch = useDispatch();
   const { orderId, total, subtotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod } = route.params;
+  
+  // Tạo ngày tháng đơn hàng
+  const now = new Date();
+  const orderDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; // Format: YYYY-MM-DD
+  const orderTime = now.toLocaleTimeString('en-US', { 
+    hour12: false, 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
   const artworksData = useSelector(state => state.artworks?.artworks || []);
 
   const calculateSubtotal = () => {
@@ -39,25 +50,52 @@ export default function OrderConfirmationScreen() {
     return selectedDeliveryTime?.price || 50000;
   };
 
+  // Clear cart sau khi thanh toán thành công
+  React.useEffect(() => {
+    dispatch(clearCart());
+  }, []);
+
   const renderProductItem = (item) => {
-    const product = artworksData.find(p => p.id === item.productId);
-    if (!product) return null;
+    const productName = item.product?.name || item.product?.title || 'Unknown Product';
+    const productArtist = item.product?.artist || 'Unknown Artist';
+    const productImage = item.product?.image;
+    const productPrice = item.product?.price || 0;
+
+    const getImageSource = (imageName) => {
+      const imageMap = {
+        'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
+        'modernlsm.jpg': require('../../../assets/Images/Product/modernlsm.jpg'),
+        'plus1.jpg': require('../../../assets/Images/Product/plus1.jpg'),
+        'plus2.jpg': require('../../../assets/Images/Product/plus2.jpg'),
+        'plus3.jpg': require('../../../assets/Images/Product/plus3.jpg'),
+        'plus4.jpg': require('../../../assets/Images/Product/plus4.jpg'),
+        'pool.jpg': require('../../../assets/Images/Product/pool.jpg'),
+        'sportman.jpg': require('../../../assets/Images/Product/sportman.jpg'),
+      };
+      
+      if (imageName && imageName.startsWith('http')) {
+        return { uri: imageName };
+      }
+      
+      return imageMap[imageName] || require('../../../assets/Images/Product/impressionlsm.jpg');
+    };
 
     return (
       <View key={item.productId} style={styles.productItem}>
-        <Image source={{ uri: product.image }} style={styles.productImage} />
+        <Image source={getImageSource(productImage)} style={styles.productImage} />
         <View style={styles.productInfo}>
-          <Text style={styles.productTitle}>{product.title}</Text>
-          <Text style={styles.productArtist}>{product.artist}</Text>
-          {item.size && item.frame && (
-            <Text style={styles.productOptions}>
-              {item.size} • {item.frame}
-            </Text>
-          )}
+          <Text style={styles.productTitle}>{productName}</Text>
+          <Text style={styles.productArtist}>{productArtist}</Text>
+          <Text style={styles.productOption}>
+            {item.selectedOptions ? 
+              `${item.selectedOptions.size}, ${item.selectedOptions.frame}` : 
+              'Standard, No Frame'
+            }
+          </Text>
           <Text style={styles.productQuantity}>Qty: {item.quantity}</Text>
         </View>
         <Text style={styles.productPrice}>
-          {formatCurrency((product.price || 0) * item.quantity)}
+          {formatCurrency(productPrice * item.quantity)}
         </Text>
       </View>
     );
@@ -185,7 +223,10 @@ export default function OrderConfirmationScreen() {
         
         <TouchableOpacity 
           style={styles.historyButton}
-          onPress={() => navigation.navigate('OrderHistory')}
+          onPress={() => navigation.navigate('OrderHistory', { 
+            newOrderId: orderId,
+            highlightNewOrder: true 
+          })}
         >
           <Text style={styles.historyButtonText}>View Order History</Text>
         </TouchableOpacity>

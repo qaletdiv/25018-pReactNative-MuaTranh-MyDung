@@ -5,10 +5,10 @@ const initialState = {
   favorites: [],
   loading: false,
   error: null,
+  checkedFavorites: {}, 
 };
 
-// Async thunks
-export const fetchFavorites = createAsyncThunk(
+export const fetchFavoritesAsync = createAsyncThunk(
   'favorites/fetchFavorites',
   async (_, { rejectWithValue }) => {
     try {
@@ -44,11 +44,22 @@ export const removeFromFavoritesAsync = createAsyncThunk(
   }
 );
 
+export const checkFavoriteAsync = createAsyncThunk(
+  'favorites/checkFavorite',
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await favoritesApi.checkFavorite(productId);
+      return { productId, isFavorite: response.data.isFavorite };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Lỗi khi kiểm tra yêu thích');
+    }
+  }
+);
+
 const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    // 
     toggleFavorite: (state, action) => {
       const product = action.payload;
       const exists = state.favorites.find(item => item.id === product.id);
@@ -58,44 +69,78 @@ const favoritesSlice = createSlice({
         state.favorites.push(product);
       }
     },
+    removeFromFavorites: (state, action) => {
+      const productId = action.payload;
+      state.favorites = state.favorites.filter(item => item.id !== productId);
+    },
     clearFavorites: (state) => {
       state.favorites = [];
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
       // Fetch favorites
-      .addCase(fetchFavorites.pending, (state) => {
+      .addCase(fetchFavoritesAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchFavorites.fulfilled, (state, action) => {
+      .addCase(fetchFavoritesAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.favorites = action.payload;
       })
-      .addCase(fetchFavorites.rejected, (state, action) => {
+      .addCase(fetchFavoritesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       // Add to favorites
+      .addCase(addToFavoritesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(addToFavoritesAsync.fulfilled, (state, action) => {
+        state.loading = false;
         state.favorites = action.payload;
       })
+      .addCase(addToFavoritesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       // Remove from favorites
+      .addCase(removeFromFavoritesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(removeFromFavoritesAsync.fulfilled, (state, action) => {
+        state.loading = false;
         state.favorites = action.payload;
+      })
+      .addCase(removeFromFavoritesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Check favorite
+      .addCase(checkFavoriteAsync.fulfilled, (state, action) => {
+        const { productId, isFavorite } = action.payload;
+        state.checkedFavorites[productId] = isFavorite;
       });
   },
 });
 
 export const { 
   toggleFavorite, 
-  clearFavorites 
+  removeFromFavorites,
+  clearFavorites,
+  clearError
 } = favoritesSlice.actions;
 
 export const selectFavorites = (state) => state.favorites.favorites;
-export const selectIsFavorite = (state, productId) => 
-  state.favorites.favorites.some(item => item.id === productId);
+export const selectIsFavorite = (state, productId) => {
+  // Chỉ sử dụng favorites array để kiểm tra
+  return state.favorites.favorites?.some(item => item.id === productId) || false;
+};
 export const selectFavoritesLoading = (state) => state.favorites.loading;
 export const selectFavoritesError = (state) => state.favorites.error;
 

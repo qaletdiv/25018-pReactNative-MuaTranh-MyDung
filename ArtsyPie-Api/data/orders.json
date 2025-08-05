@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "orderNumber": "ORD-2024-001",
+    "date": "2024-01-15",
+    "status": "completed",
+    "total": 15000000,
+    "products": [
+      {
+        "id": "1",
+        "title": "Abstract Harmony",
+        "price": 12000000,
+        "quantity": 1
+      },
+      {
+        "id": "2", 
+        "title": "Mountain Serenity",
+        "price": 3000000,
+        "quantity": 1
+      }
+    ],
+    "address": "123 Nguyen Van Linh, District 7, Ho Chi Minh City",
+    "paymentMethod": "credit_card",
+    "deliveryTime": "2024-01-20",
+    "shippingMethod": "express"
+  }
+] 

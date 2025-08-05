@@ -9,25 +9,22 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AddressSelectionScreen.styles';
 import { COLORS } from '../../theme/colors';
 
 export default function AddressSelectionScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const dispatch = useDispatch();
   
   // Nhận địa chỉ hiện tại từ CheckoutScreen
   const currentSelectedAddress = route.params?.currentSelectedAddress;
   
   const [selectedAddress, setSelectedAddress] = useState(() => {
-    // Nếu có địa chỉ hiện tại từ Checkout, sử dụng nó, không thì default 'home'
-    return currentSelectedAddress?.id || 'home';
+    // Nếu có địa chỉ hiện tại từ Checkout, sử dụng nó, không thì default đầu tiên
+    return currentSelectedAddress?.id || null;
   });
 
-  // Mock addresses - in real app, this would come from Redux/API
+  // Mock addresses - chỉ dùng local state
   const [addresses, setAddresses] = useState([
     {
       id: 'home',
@@ -55,34 +52,7 @@ export default function AddressSelectionScreen() {
     },
   ]);
 
-  // Load addresses từ AsyncStorage khi component mount
-  useEffect(() => {
-    loadAddressesFromStorage();
-  }, []);
 
-  // Load addresses từ AsyncStorage
-  const loadAddressesFromStorage = async () => {
-    try {
-      const savedAddresses = await AsyncStorage.getItem('userAddresses');
-      if (savedAddresses) {
-        const parsedAddresses = JSON.parse(savedAddresses);
-        setAddresses(parsedAddresses);
-        console.log('📱 Loaded addresses from storage:', parsedAddresses);
-      }
-    } catch (error) {
-      console.log('❌ Error loading addresses:', error);
-    }
-  };
-
-  // Save addresses vào AsyncStorage
-  const saveAddressesToStorage = async (newAddresses) => {
-    try {
-      await AsyncStorage.setItem('userAddresses', JSON.stringify(newAddresses));
-      console.log('💾 Saved addresses to storage:', newAddresses);
-    } catch (error) {
-      console.log('❌ Error saving addresses:', error);
-    }
-  };
 
   // Nhận địa chỉ mới hoặc đã update từ NewAddressScreen
   useEffect(() => {
@@ -90,21 +60,16 @@ export default function AddressSelectionScreen() {
     const updatedAddress = route.params?.updatedAddress;
     
     if (newAddress) {
-      console.log('🆕 Adding new address:', newAddress);
+  
       setAddresses(prev => {
         let updated = [...prev];
         
-        // Nếu địa chỉ mới là default, xóa default của tất cả địa chỉ khác
         if (newAddress.isDefault) {
           updated = updated.map(addr => ({ ...addr, isDefault: false }));
         }
         
         updated.push(newAddress);
-        console.log('📝 Updated addresses list:', updated);
-        
-        // Lưu vào AsyncStorage
-        saveAddressesToStorage(updated);
-        
+
         return updated;
       });
       
@@ -115,24 +80,19 @@ export default function AddressSelectionScreen() {
     }
     
     if (updatedAddress) {
-      console.log('✏️ Updating address:', updatedAddress);
+  
       setAddresses(prev => {
         let updated = prev.map(addr => {
           if (addr.id === updatedAddress.id) {
             return updatedAddress;
           }
-          // Nếu địa chỉ này được set default, xóa default của địa chỉ khác
           if (updatedAddress.isDefault) {
             return { ...addr, isDefault: false };
           }
           return addr;
         });
         
-        console.log('📝 Updated addresses list after edit:', updated);
-        
-        // Lưu vào AsyncStorage
-        saveAddressesToStorage(updated);
-        
+
         return updated;
       });
       
@@ -155,6 +115,14 @@ export default function AddressSelectionScreen() {
     }
   }, [route.params?.newAddress, route.params?.updatedAddress, navigation]);
 
+  // Set selected address khi addresses load xong
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedAddress) {
+      const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0];
+      setSelectedAddress(defaultAddress.id);
+    }
+  }, [addresses, selectedAddress]);
+
   // Cập nhật selectedAddress khi addresses thay đổi và địa chỉ hiện tại không tồn tại
   useEffect(() => {
     const currentAddressExists = addresses.find(addr => addr.id === selectedAddress);
@@ -164,12 +132,7 @@ export default function AddressSelectionScreen() {
     }
   }, [addresses, selectedAddress]);
 
-  // Debug: Kiểm tra addresses state
-  useEffect(() => {
-    console.log('=== ADDRESSES STATE DEBUG ===');
-    console.log('Current addresses:', addresses);
-    console.log('Selected address:', selectedAddress);
-  }, [addresses, selectedAddress]);
+
 
   const handleAddressSelect = (addressId) => {
     setSelectedAddress(addressId);
@@ -180,6 +143,25 @@ export default function AddressSelectionScreen() {
     navigation.navigate('NewAddressScreen', { 
       editAddress: address 
     });
+  };
+
+  const handleAddressDelete = async (address) => {
+    Alert.alert(
+      'Xác nhận',
+      'Bạn có chắc muốn xóa địa chỉ này?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Xóa',
+          style: 'destructive',
+          onPress: () => {
+            // Chỉ xóa khỏi local state
+            setAddresses(prev => prev.filter(addr => addr.id !== address.id));
+            Alert.alert('Success', 'Address deleted successfully');
+          }
+        }
+      ]
+    );
   };
 
   const handleAddNewAddress = () => {
@@ -219,19 +201,28 @@ export default function AddressSelectionScreen() {
         </View>
       </TouchableOpacity>
       
-      <TouchableOpacity
-        style={styles.radioButton}
-        onPress={() => handleAddressSelect(address.id)}
-      >
-        <View style={[
-          styles.radioCircle,
-          selectedAddress === address.id && styles.radioCircleSelected
-        ]}>
-          {selectedAddress === address.id && (
-            <View style={styles.radioDot} />
-          )}
-        </View>
-      </TouchableOpacity>
+      <View style={styles.addressActions}>
+        <TouchableOpacity
+          style={styles.radioButton}
+          onPress={() => handleAddressSelect(address.id)}
+        >
+          <View style={[
+            styles.radioCircle,
+            selectedAddress === address.id && styles.radioCircleSelected
+          ]}>
+            {selectedAddress === address.id && (
+              <View style={styles.radioDot} />
+            )}
+          </View>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleAddressDelete(address)}
+        >
+          <Ionicons name="trash-outline" size={20} color="#ff6b6b" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 

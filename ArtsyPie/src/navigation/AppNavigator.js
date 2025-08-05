@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BottomTabNavigator from './BottomTabNavigator';
-import UserProfileScreen from '../screens/Auth/UserProfileScreen/UserProfileScreen';
+import UserProfileScreen from '../screens/UserProfileScreen/UserProfileScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen/RegisterScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen/ProductDetailScreen';
@@ -14,6 +14,18 @@ import OrderConfirmationScreen from '../screens/OrderConfirmationScreen/OrderCon
 import AddressSelectionScreen from '../screens/AddressSelectionScreen/AddressSelectionScreen';
 import NewAddressScreen from '../screens/NewAddressScreen/NewAddressScreen';
 import DeliveryTimeSelectionScreen from '../screens/DeliveryTimeSelectionScreen/DeliveryTimeSelectionScreen';
+import OrderHistoryScreen from '../screens/OrderHistoryScreen/OrderHistoryScreen';
+import OrderDetailScreen from '../screens/OrderDetailScreen/OrderDetailScreen';
+import LeaveReviewScreen from '../screens/LeaveReviewScreen/LeaveReviewScreen';
+import NotificationScreen from '../screens/NotificationScreen/NotificationScreen';
+import AddressBookScreen from '../screens/AddressBookScreen/AddressBookScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen/ChangePasswordScreen';
+import OrderTrackingScreen from '../screens/OrderTrackingScreen/OrderTrackingScreen';
+import PaymentMethodScreen from '../screens/PaymentMethodScreen/PaymentMethodScreen';
+import SearchHistoryScreen from '../screens/SearchHistoryScreen/SearchHistoryScreen';
+import WishlistScreen from '../screens/WishlistScreen/WishlistScreen';
+import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +45,18 @@ export default function AppNavigator() {
       <Stack.Screen name="AddressSelection" component={AddressSelectionScreen} />
       <Stack.Screen name="NewAddressScreen" component={NewAddressScreen} />
       <Stack.Screen name="DeliveryTimeSelection" component={DeliveryTimeSelectionScreen} />
+      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="LeaveReview" component={LeaveReviewScreen} />
+      <Stack.Screen name="Notification" component={NotificationScreen} />
+      <Stack.Screen name="AddressBook" component={AddressBookScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
+      <Stack.Screen name="PaymentMethod" component={PaymentMethodScreen} />
+      <Stack.Screen name="SearchHistory" component={SearchHistoryScreen} />
+      <Stack.Screen name="Wishlist" component={WishlistScreen} />
+      <Stack.Screen name="Favorites" component={FavoritesScreen} />
+
     </Stack.Navigator>
   );
 }

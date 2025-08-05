@@ -8,23 +8,9 @@
   },
   {
     "id": 2,
-    "fullName": "Postman Tester",
-    "email": "postman.test@example.com",
-    "passwordHash": "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
-    "createdAt": "2025-07-21T09:20:58.299Z"
-  },
-  {
-    "id": 3,
-    "fullName": "dung",
-    "email": "dung136789@gmail.com",
-    "passwordHash": "0d3e1b93a31502b101e2bbd036929f9d312aac386132ee7401316f1224c91deb",
-    "createdAt": "2025-07-21T09:50:57.481Z"
-  },
-  {
-    "id": 4,
-    "fullName": "dung",
-    "email": "dung@gmail.com",
-    "passwordHash": "1e9048b11821bb52b0632ca7e6bb60c4befcf0232402b38b21876c938880d75c",
-    "createdAt": "2025-07-21T12:34:55.668Z"
+    "fullName": "mydung",
+    "email": "lengocmydungg139@gmail.com",
+    "passwordHash": "d523c81851bacd5e18549d17ca85a71944c834867e553d17417e1fb6b7b5ecd5",
+    "createdAt": "2025-08-03T13:50:43.233Z"
   }
 ]

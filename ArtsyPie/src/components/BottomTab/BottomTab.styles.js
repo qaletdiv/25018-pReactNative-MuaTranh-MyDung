@@ -17,6 +17,7 @@ export default StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 5,
+    marginTop:50,
   },
   tab: {
     flex: 1,

@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import Icon from 'react-native-vector-icons/Feather';
+import { Ionicons } from '@expo/vector-icons';
 import styles from './ArtCard.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
-import { selectIsFavorite, toggleFavorite } from '../../redux/slices/favoritesSlice';
+import { selectIsFavorite, toggleFavorite, removeFromFavorites } from '../../redux/slices/favoritesSlice';
 
 export default function ArtCard({ item, onPress, compact = false, showFavorite = true }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFavorite = useSelector(state => selectIsFavorite(state, item.id));
-  const token = useSelector(state => state.auth.token);
+  const { isAuthenticated } = useSelector(state => state.auth);
+
+  // Không cần check API, chỉ sử dụng local state
+  // useEffect(() => {
+  //   if (isAuthenticated && item.id) {
+  //     dispatch(checkFavoriteAsync(item.id));
+  //   }
+  // }, [dispatch, isAuthenticated, item.id]);
 
   const handlePress = () => {
     if (onPress) {
@@ -24,12 +31,49 @@ export default function ArtCard({ item, onPress, compact = false, showFavorite =
 
   const handleFavoritePress = (e) => {
     e.stopPropagation();
-    if (!token) {
+    if (!isAuthenticated) {
       // Nếu chưa đăng nhập, chuyển đến trang login
       navigation.navigate('LoginScreen');
       return;
     }
-    dispatch(toggleFavorite(item));
+    
+    // Sử dụng local state trực tiếp
+    if (isFavorite) {
+      dispatch(removeFromFavorites(item.id));
+    } else {
+      dispatch(toggleFavorite(item));
+    }
+  };
+
+  // Helper function để xử lý image source
+  const getImageSource = () => {
+    if (!item.image) {
+      return null; // Không hiển thị gì nếu không có image
+    }
+    
+    // Nếu là string URL (bắt đầu bằng http)
+    if (typeof item.image === 'string' && item.image.startsWith('http')) {
+      return { uri: item.image };
+    }
+    
+    // Nếu là tên file từ assets (ví dụ: 'impressionlsm.jpg')
+    if (typeof item.image === 'string') {
+      const imageMap = {
+        'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
+        'modernlsm.jpg': require('../../../assets/Images/Product/modernlsm.jpg'),
+        'plus1.jpg': require('../../../assets/Images/Product/plus1.jpg'),
+        'plus2.jpg': require('../../../assets/Images/Product/plus2.jpg'),
+        'plus3.jpg': require('../../../assets/Images/Product/plus3.jpg'),
+        'plus4.jpg': require('../../../assets/Images/Product/plus4.jpg'),
+        'pool.jpg': require('../../../assets/Images/Product/pool.jpg'),
+        'sportman.jpg': require('../../../assets/Images/Product/sportman.jpg'),
+      };
+      
+      return imageMap[item.image] || require('../../../assets/Images/Product/impressionlsm.jpg');
+    }
+    
+    // Nếu là require() object hoặc local image
+    return item.image;
   };
 
   return (
@@ -38,8 +82,9 @@ export default function ArtCard({ item, onPress, compact = false, showFavorite =
       onPress={handlePress}
     >
       <Image 
-        source={{ uri: item.image }} 
+        source={getImageSource()} 
         style={[styles.image, compact && styles.compactImage]} 
+        resizeMode="cover"
       />
       
       {/* nut yeu thich */}
@@ -48,8 +93,8 @@ export default function ArtCard({ item, onPress, compact = false, showFavorite =
           style={[styles.favoriteButton, compact && styles.compactFavoriteButton]}
           onPress={handleFavoritePress}
         >
-          <Icon 
-            name={isFavorite ? "heart" : "heart"} 
+          <Ionicons 
+            name={isFavorite ? "heart" : "heart-outline"} 
             size={compact ? 16 : 20} 
             color={isFavorite ? "#FF6B6B" : "#fff"} 
             style={isFavorite ? styles.filledHeart : styles.outlineHeart}

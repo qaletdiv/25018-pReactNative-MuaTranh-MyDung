@@ -37,7 +37,7 @@ export default function Category() {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.container}>
       {categories.map((item, index) => (
-        <View key={index} >
+        <View key={index}>
           <View style={styles.item}>
             <Image
               source={typeof item.image === 'string' ? { uri: item.image } : item.image}

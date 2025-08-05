@@ -14,14 +14,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import styles from './CheckoutScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { COLORS } from '../../theme/colors';
-import artworksData from '../../data/artworksData';
-import { clearCart } from '../../redux/slices/cartSlice';
+import { fetchArtworks } from '../../redux/slices/artworksSlice';
+import { clearCartAsync } from '../../redux/slices/cartSlice';
+import { createOrder } from '../../redux/slices/ordersSlice';
 
 export default function CheckoutScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.cartItems);
+  const { artworks } = useSelector((state) => state.artworks);
+
+  // Load artworks data when component mounts
+  React.useEffect(() => {
+    dispatch(fetchArtworks());
+  }, [dispatch]);
 
   // Nhận cart data từ CartScreen
   const cartDataFromRoute = route.params?.cartItems;
@@ -132,8 +139,8 @@ export default function CheckoutScreen() {
     }
     
     return currentCartItems.reduce((total, item) => {
-      const product = artworksData.find(p => p.id === item.productId);
-      const itemTotal = (product?.price || 0) * item.quantity;
+      // Sử dụng product data từ cart item (đã có từ API)
+      const itemTotal = (item.product?.price || 0) * item.quantity;
       return total + itemTotal;
     }, 0);
   };
@@ -161,20 +168,51 @@ export default function CheckoutScreen() {
     return baseTotal + calculateDelivery();
   };
 
-  const handlePlaceOrder = () => {
-    // Lấy địa chỉ hiện tại từ route params hoặc từ addresses array
-    const currentAddress = route.params?.selectedAddress || addresses.find(a => a.id === selectedAddress);
-    
-    navigation.navigate('OrderConfirmation', {
-      orderId: `ORD${Date.now()}`,
-      total: calculateTotal(),
-      subtotal: calculateSubtotal(),
-      items: currentCartItems,
-      selectedAddress: currentAddress, // Sử dụng địa chỉ hiện tại
-      selectedPayment: paymentMethods.find(p => p.id === selectedPayment),
-      selectedDeliveryTime: deliveryOptions.find(d => d.id === selectedDeliveryTime),
-    });
-    dispatch(clearCart());
+  const handlePlaceOrder = async () => {
+    try {
+      // Lấy địa chỉ hiện tại từ route params hoặc từ addresses array
+      const currentAddress = route.params?.selectedAddress || addresses.find(a => a.id === selectedAddress);
+      const selectedDelivery = deliveryOptions.find(d => d.id === selectedDeliveryTime);
+      const selectedPayment = paymentMethods.find(p => p.id === selectedPayment);
+      
+      // Tạo order data cho API
+      const orderData = {
+        total: calculateTotal(),
+        products: currentCartItems.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || 'Unknown Product',
+          image: item.product?.image,
+          price: item.product?.price || 0,
+          quantity: item.quantity,
+          size: item.selectedOptions?.size || 'Standard',
+          options: `${item.selectedOptions?.size || 'Standard'}, ${item.selectedOptions?.frame || 'No Frame'}`
+        })),
+        address: currentAddress,
+        paymentMethod: selectedPayment,
+        deliveryTime: selectedDelivery,
+        shippingMethod: selectedDelivery
+      };
+
+      // Gọi API tạo order
+      const result = await dispatch(createOrder(orderData)).unwrap();
+      
+      // Navigate đến OrderConfirmation với data từ API
+      navigation.navigate('OrderConfirmation', {
+        orderId: result.id,
+        total: result.total,
+        subtotal: calculateSubtotal(),
+        items: currentCartItems,
+        selectedAddress: currentAddress,
+        selectedPayment: selectedPayment,
+        selectedDeliveryTime: selectedDelivery,
+        selectedShippingMethod: selectedDelivery,
+      });
+      
+      // Clear cart sau khi tạo order thành công
+      await dispatch(clearCartAsync()).unwrap();
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
   };
 
   const renderDeliveryAddress = () => {

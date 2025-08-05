@@ -12,7 +12,7 @@ import AppNavigator from './AppNavigator';
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigator() {
-  const { token } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,7 +43,7 @@ export default function MainNavigator() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {token ? (
+      {isAuthenticated ? (
         // Nếu ĐÃ ĐĂNG NHẬP, vào thẳng APP
         <Stack.Screen name="AppNavigator" component={AppNavigator} />
       ) : (

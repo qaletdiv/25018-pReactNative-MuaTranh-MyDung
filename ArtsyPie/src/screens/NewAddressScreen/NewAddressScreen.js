@@ -28,38 +28,45 @@ export default function NewAddressScreen() {
   const isFormValid = addressNickname && fullAddress.trim();
   const isEditMode = !!editAddress;
 
-  const handleAddAddress = () => {
+  const handleAddAddress = async () => {
     if (!isFormValid) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
 
-    if (isEditMode) {
-      // Update địa chỉ hiện tại
-      const updatedAddress = {
-        ...editAddress,
-        name: addressNickname,
-        address: fullAddress,
-        isDefault: isDefault,
-      };
+    try {
+      if (isEditMode) {
+        // Update địa chỉ hiện tại 
+        const updatedAddress = {
+          ...editAddress,
+          name: addressNickname,
+          address: fullAddress,
+          isDefault: isDefault,
+        };
+        
+        // Truyền địa chỉ đã update
+        navigation.navigate('AddressSelection', { 
+          updatedAddress: updatedAddress 
+        });
+      } else {
+        // Thêm địa chỉ mới 
+        const newAddress = {
+          id: `address_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: addressNickname,
+          address: fullAddress,
+          isDefault: isDefault,
+        };
+        
+        // Truyền địa chỉ mới về AddressSelectionScreen
+        navigation.navigate('AddressSelection', { 
+          newAddress: newAddress 
+        });
+      }
       
-      // Truyền địa chỉ đã update về AddressSelectionScreen
-      navigation.navigate('AddressSelection', { 
-        updatedAddress: updatedAddress 
-      });
-    } else {
-      // Create new address with unique ID
-      const newAddress = {
-        id: `address_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        name: addressNickname,
-        address: fullAddress,
-        isDefault: isDefault,
-      };
-      
-      // Truyền địa chỉ mới về AddressSelectionScreen
-      navigation.navigate('AddressSelection', { 
-        newAddress: newAddress 
-      });
+      Alert.alert('Success', isEditMode ? 'Address updated successfully' : 'Address added successfully');
+    } catch (error) {
+      console.error('NewAddressScreen: Error saving address', error);
+      Alert.alert('Error', 'Failed to save address');
     }
   };
 

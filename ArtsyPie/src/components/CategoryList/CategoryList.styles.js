@@ -1,9 +1,11 @@
 
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../theme/colors';
 
 export default StyleSheet.create({
   listContainer: {
     padding: 16,
+    marginBottom: 150, 
   },
   cardContainer: {
     borderRadius: 16,
@@ -57,7 +59,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   author: {
-    color: '#ccc',
+    color: COLORS.primary,
     fontSize: 14,
   },
   avatar: {

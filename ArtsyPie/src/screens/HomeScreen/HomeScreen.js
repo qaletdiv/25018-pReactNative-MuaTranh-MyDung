@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, Image, Modal, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, Modal, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import styles from './HomeScreen.styles';
@@ -10,15 +10,32 @@ import ArtCard from '../../components/ArtCard/ArtCard';
 import ArtistCard from '../../components/ArtistCard/ArtistCard';
 import CategoryList from '../../components/CategoryList/CategoryList';
 import SearchFilterModal from '../../components/SearchFilterModal/SearchFilterModal';
-import { catalogData } from '../../data/catalogData';
-import artworksData from '../../data/artworksData';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchArtworks } from '../../redux/slices/artworksSlice';
+import { fetchCatalog } from '../../redux/slices/catalogSlice';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { artworks = [], loading: artworksLoading, error: artworksError } = useSelector(state => state.artworks);
+  const { catalog = [], loading: catalogLoading } = useSelector(state => state.catalog);
+  
   const [searchText, setSearchText] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
-  const [filteredArtworks, setFilteredArtworks] = useState([...artworksData]);
+  const [filteredArtworks, setFilteredArtworks] = useState([]);
+
+  // Load data when component mounts
+  React.useEffect(() => {
+    dispatch(fetchArtworks());
+    dispatch(fetchCatalog());
+  }, [dispatch]);
+
+  React.useEffect(() => {
+    if (artworks && Array.isArray(artworks) && artworks.length > 0) {
+      setFilteredArtworks([...artworks]);
+    }
+  }, [artworks]);
 
   // Dữ liệu artists 
   const artistsData = [
@@ -83,70 +100,42 @@ export default function HomeScreen() {
     }
   };
 
-  // Hàm chỉ cập nhật text, không search ngay
   const handleSearchTextChange = (text) => {
     setSearchText(text);
   };
 
-  // Hàm mở filter modal
   const handleFilterPress = () => {
-    console.log('HomeScreen: Filter button pressed!');
     setFilterModalVisible(true);
   };
 
-  // Hàm áp dụng filter
   const handleFilterApply = (filters) => {
     setActiveFilters(filters);
-    applyFilters(filteredArtworks, filters);
     setFilterModalVisible(false);
+    applyFilters(artworks, filters);
   };
 
-  // Hàm áp dụng filter vào dữ liệu
   const applyFilters = (data, filters) => {
+    if (!data || !Array.isArray(data)) return;
+    
     let filtered = [...data];
 
-    // Lọc theo loại hình
-    if (filters.types && filters.types.length > 0) {
-      filtered = filtered.filter(item => filters.types.includes(item.type));
+    // Filter by category
+    if (filters.category && filters.category !== 'All') {
+      filtered = filtered.filter(item => item.category === filters.category);
     }
 
-    // Lọc theo phong cách
-    if (filters.styles && filters.styles.length > 0) {
-      filtered = filtered.filter(item => filters.styles.includes(item.style));
-    }
-
-    // Lọc theo kích thước
-    if (filters.sizes && filters.sizes.length > 0) {
-      filtered = filtered.filter(item => filters.sizes.includes(item.size));
-    }
-
-    // Lọc theo hướng tranh
-    if (filters.orientations && filters.orientations.length > 0) {
-      filtered = filtered.filter(item => filters.orientations.includes(item.orientation));
-    }
-
-    // Lọc theo khoảng giá
+    // Filter by price range
     if (filters.priceRange) {
-      filtered = filtered.filter(item => 
-        item.price >= filters.priceRange[0] && item.price <= filters.priceRange[1]
-      );
+      const [min, max] = filters.priceRange.split('-').map(Number);
+      filtered = filtered.filter(item => {
+        const price = item.price;
+        return price >= min && (max ? price <= max : true);
+      });
     }
 
-    // Sắp xếp
-    if (filters.sort) {
-      switch (filters.sort) {
-        case 'Newest':
-          filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-          break;
-        case 'Price: Low to High':
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case 'Price: High to Low':
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        default:
-          break;
-      }
+    // Filter by artist
+    if (filters.artist && filters.artist !== 'All') {
+      filtered = filtered.filter(item => item.artist === filters.artist);
     }
 
     setFilteredArtworks(filtered);
@@ -157,8 +146,27 @@ export default function HomeScreen() {
   };
 
   const handleArtistPress = (artist) => {
-    Alert.alert('Artist', `View all works by ${artist.name}\nSpecialty: ${artist.specialty}\nCountry: ${artist.country}`);
+    navigation.navigate('ProductList', { artist: artist.name });
   };
+
+  const renderLoadingState = () => (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#AA7F60" />
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorTitle}>Something went wrong</Text>
+      <Text style={styles.errorText}>
+        We couldn't load the content. Please check your connection and try again.
+      </Text>
+      <TouchableOpacity style={styles.retryButton} onPress={() => dispatch(fetchArtworks())}>
+        <Text style={styles.retryButtonText}>Retry</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   const renderContent = () => (
     <View>
@@ -185,15 +193,27 @@ export default function HomeScreen() {
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={filteredArtworks.slice(0, 4)}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <ArtCard item={item} onPress={() => handleArtCardPress(item)} horizontalCard />
-        )}
-      />
+      
+      {artworksLoading ? (
+        <View style={styles.sectionLoading}>
+          <ActivityIndicator size="small" color="#AA7F60" />
+          <Text style={styles.sectionLoadingText}>Loading...</Text>
+        </View>
+      ) : artworks && Array.isArray(artworks) && artworks.length > 0 ? (
+        <FlatList
+          data={artworks.slice(0, 4)}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <ArtCard item={item} onPress={() => handleArtCardPress(item)} horizontalCard />
+          )}
+        />
+      ) : (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyText}>No artworks available</Text>
+        </View>
+      )}
 
       <Text style={styles.sectionTitle}>Artists</Text>
       <FlatList
@@ -210,10 +230,27 @@ export default function HomeScreen() {
           />
         )}
       />
+      
       <Text style={styles.sectionTitle}>Catalog</Text>
-      <CategoryList data={catalogData} />
+      <CategoryList data={catalog} style={styles.categoryList}/>
     </View>
   );
+
+  if (artworksLoading && (!artworks || !Array.isArray(artworks) || artworks.length === 0)) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        {renderLoadingState()}
+      </SafeAreaView>
+    );
+  }
+
+  if (artworksError && (!artworks || !Array.isArray(artworks) || artworks.length === 0)) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        {renderErrorState()}
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>

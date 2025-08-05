@@ -1,0 +1,38 @@
+module.exports = [
+  {
+    "id": "1",
+    "type": "purchase",
+    "title": "Purchase Completed!",
+    "description": "You have successfully purchased 334 headphones, thank you and wait for your package to arrive ✨",
+    "time": "2 m ago",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "id": "2",
+    "type": "message",
+    "title": "Jerremy Send You a Message",
+    "description": "hello your package has almost arrived, are you at home now?",
+    "time": "2 m ago",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:28:00.000Z"
+  },
+  {
+    "id": "3",
+    "type": "sale",
+    "title": "Flash Sale!",
+    "description": "Get 20% discount for first transaction in this month! ��",
+    "time": "2 m ago",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:25:00.000Z"
+  },
+  {
+    "id": "4",
+    "type": "delivery",
+    "title": "Package Sent",
+    "description": "Hi your package has been sent from new york",
+    "time": "10 m ago",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:20:00.000Z"
+  }
+]

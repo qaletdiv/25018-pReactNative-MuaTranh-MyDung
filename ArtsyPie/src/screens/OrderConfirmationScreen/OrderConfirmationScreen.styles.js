@@ -98,10 +98,10 @@ export default StyleSheet.create({
     color: '#666',
     marginBottom: 4,
   },
-  productOptions: {
+  productOption: {
     fontSize: 12,
-    color: '#999',
-    fontStyle: 'italic',
+    color: '#AA7F60',
+    fontWeight: '600',
     marginBottom: 4,
   },
   productQuantity: {

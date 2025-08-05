@@ -55,13 +55,13 @@ export default function SearchBar({
         />
 
         {/* Icon Filter ở góc phải */}
-        {/* <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
+        <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
           <MaterialCommunityIcons
             name="filter-variant"
             size={20}
             color={styles.iconLeft.color}
           />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
 
       {!compact && (

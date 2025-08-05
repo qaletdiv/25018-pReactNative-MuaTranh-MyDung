@@ -1,217 +1,239 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
   SafeAreaView,
+  StatusBar
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 import styles from './CartScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
-import { removeFromCart, updateCartItem } from '../../redux/slices/cartSlice';
-import artworksData from '../../data/artworksData';
+import {
+  fetchCartAsync,
+  removeFromCartAsync,
+  updateCartItemAsync,
+  clearCartAsync
+} from '../../redux/slices/cartSlice';
+import { fetchArtworks } from '../../redux/slices/artworksSlice';
 
-export default function CartScreen() {
+const CartScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.cartItems);
+  
+  // Get cart data from Redux state (from API)
+  const { cartItems, loading, error } = useSelector(state => state.cart);
+  const artworks = useSelector(state => state.artworks.artworks);
 
-  const handleRemoveFromCart = (itemId) => {
+  // Debug log
+  // console.log('CartScreen - cartItems:', cartItems);
+  // console.log('CartScreen - loading:', loading);
+  // console.log('CartScreen - error:', error);
+
+  // Load cart and artworks data when component mounts
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        await dispatch(fetchCartAsync()).unwrap();
+      } catch (error) {
+        Alert.alert('Error', error || 'Cannot load cart');
+      }
+    };
+
+    loadCart();
+    dispatch(fetchArtworks());
+  }, [dispatch]);
+
+  const handleUpdateQuantity = async (item, newQuantity) => {
+    const itemId = item.productId || item.id;
+    if (newQuantity <= 0) {
+      try {
+        await dispatch(removeFromCartAsync(itemId)).unwrap();
+      } catch (error) {
+        Alert.alert('Error', error || 'Cannot remove product');
+      }
+    } else {
+      try {
+        await dispatch(updateCartItemAsync({
+          productId: itemId,
+          quantity: newQuantity,
+          selectedOptions: item.selectedOptions
+        })).unwrap();
+      } catch (error) {
+        Alert.alert('Error', error || 'Cannot update quantity');
+      }
+    }
+  };
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      await dispatch(removeFromCartAsync(itemId)).unwrap();
+    } catch (error) {
+              Alert.alert('Error', error || 'Cannot remove product');
+    }
+  };
+
+  const handleClearCart = async () => {
     Alert.alert(
-      'Xác nhận',
-      'Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?',
+      'Confirm',
+      'Are you sure you want to clear all items from your cart?',
       [
-        { text: 'Hủy', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Xóa',
+          text: 'Clear',
           style: 'destructive',
-          onPress: () => {
-            dispatch(removeFromCart(itemId));
+          onPress: async () => {
+            try {
+              await dispatch(clearCartAsync()).unwrap();
+            } catch (error) {
+              Alert.alert('Lỗi', error || 'Can not delete cart');
+            }
           }
         }
       ]
     );
   };
 
-  const handleUpdateQuantity = (itemId, newQuantity) => {
-    if (newQuantity < 1) {
-      handleRemoveFromCart(itemId);
-      return;
-    }
-    
-    dispatch(updateCartItem({ productId: itemId, quantity: newQuantity }));
-  };
+  const renderCartItem = (item, index) => {
+    const imageSource = item.product?.image 
+      ? (typeof item.product.image === 'string' && item.product.image.startsWith('http') 
+          ? { uri: item.product.image } 
+          : item.product.image)
+      : require('../../../assets/Images/Product/plus1.jpg');
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => {
-      const product = artworksData.find(art => art.id === item.productId);
-      return total + ((product?.price || 0) * item.quantity);
-    }, 0);
-  };
-
-  const calculateShipping = () => {
-    return 50000; // Phí vận chuyển cố định
-  };
-
-  const calculateTotal = () => {
-    return calculateSubtotal() + calculateShipping();
-  };
-
-  const handleCheckout = () => {
-    if (cartItems.length === 0) {
-      Alert.alert('Giỏ hàng trống', 'Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.');
-      return;
-    }
-    
-    const subtotal = calculateSubtotal();
-    const vat = subtotal * 0.1; // VAT 10%
-    const totalWithoutShipping = subtotal + vat; // Total không bao gồm phí ship
-    
-    // Truyền đầy đủ thông tin đến CheckoutScreen
-    navigation.navigate('Checkout', {
-      cartItems: JSON.parse(JSON.stringify(cartItems)), 
-      subtotal: subtotal,
-      vat: vat,
-      totalWithoutShipping: totalWithoutShipping
-    });
-  };
-
-  const renderCartItem = ({ item }) => {
-    // Tìm thông tin sản phẩm từ artworksData
-    const product = artworksData.find(art => art.id === item.productId);
-    
-    if (!product) {
-      return null;
-    }
-    
     return (
-      <View style={styles.cartItem}>
-        <Image 
-          source={{ uri: product.image }} 
-          style={styles.itemImage}
-          resizeMode="cover"
-        />
-        
-        <View style={styles.itemInfo}>
-          <Text style={styles.itemTitle} numberOfLines={2}>{product.title}</Text>
-          <Text style={styles.itemArtist}>{product.artist}</Text>
-          {item.size && item.frame && (
-            <Text style={styles.itemOptions}>
-              {item.size} • {item.frame}
-            </Text>
-          )}
-          <Text style={styles.itemPrice}>{formatCurrency(product.price)}</Text>
-        
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity 
-            style={styles.quantityButton}
-            onPress={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-          >
-            <Ionicons name="remove" size={16} color="#666" />
-          </TouchableOpacity>
-          
-          <Text style={styles.quantityText}>{item.quantity}</Text>
-          
-          <TouchableOpacity 
-            style={styles.quantityButton}
-            onPress={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
-          >
-            <Ionicons name="add" size={16} color="#666" />
-          </TouchableOpacity>
+      <View key={`${item.id}_${index}`} style={styles.cartItem}>
+        <Image source={imageSource} style={styles.productImage} />
+        <View style={styles.productInfo}>
+          <Text style={styles.productName}>{item.product?.name || 'Unknown Product'}</Text>
+          <Text style={styles.productAuthor}>{item.product?.artist || 'Unknown Artist'}</Text>
+          <Text style={styles.productOption}>
+            {item.selectedOptions ?
+              `${item.selectedOptions.size}, ${item.selectedOptions.frame}` :
+              'Standard, No Frame'
+            }
+          </Text>
+          <View style={styles.bottomRow}>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => handleUpdateQuantity(item, item.quantity - 1)}
+              >
+                <Ionicons name="remove" size={16} color="#2B2B2B" />
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={() => handleUpdateQuantity(item, item.quantity + 1)}
+              >
+                <Ionicons name="add" size={16} color="#2B2B2B" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.removeButton}
+              onPress={() => handleRemoveItem(item.productId || item.id)}
+            >
+              <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-      
-      <View style={styles.itemActions}>
-        <TouchableOpacity 
-          style={styles.removeButton}
-          onPress={() => handleRemoveFromCart(item.productId)}
-        >
-          <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
   };
 
-  const renderEmptyCart = () => (
-    <View style={styles.emptyCart}>
-      <Ionicons name="cart-outline" size={80} color="#ccc" />
-      <Text style={styles.emptyCartTitle}>Empty Cart</Text>
-      <Text style={styles.emptyCartText}>You don't have any items in your cart</Text>
-      <TouchableOpacity 
-        style={styles.continueShoppingButton}
-        onPress={() => navigation.navigate('Home')}
-      >
-        <Text style={styles.continueShoppingText}>Continue Shopping</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <ActivityIndicator size="large" color="#AA7F60" />
+        <Text style={styles.loadingText}>Loading cart...</Text>
+      </SafeAreaView>
+    );
+  }
 
-  const renderOrderSummary = () => (
-    <View style={styles.orderSummary}>
-      <Text style={styles.summaryTitle}>Order Summary</Text>
-      
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Sub-total:</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(calculateSubtotal())}</Text>
-      </View>
-      
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>VAT (10%):</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(calculateSubtotal() * 0.1)}</Text>
-      </View>
-      
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Shipping fee:</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(calculateShipping())}</Text>
-      </View>
-      
-      <View style={[styles.summaryRow, styles.totalRow]}>
-        <Text style={styles.totalLabel}>Total:</Text>
-        <Text style={styles.totalValue}>{formatCurrency(calculateTotal() + calculateSubtotal() * 0.1)}</Text>
-      </View>
-    </View>
-  );
+  if (cartItems.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#2B2B2B" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>My Cart</Text>
+          <View style={styles.placeholder} />
+        </View>
+        
+        <View style={styles.emptyContainer}>
+          <Ionicons name="cart-outline" size={80} color="#E8E2DB" />
+          <Text style={styles.emptyTitle}>Empty Cart</Text>
+          <Text style={styles.emptyText}>
+            You don't have any items in your cart
+          </Text>
+          <TouchableOpacity
+            style={styles.continueShoppingButton}
+            onPress={() => navigation.navigate('MainTabs', { screen: 'Home' })}
+          >
+            <Text style={styles.continueShoppingButtonText}>Continue Shopping</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#333" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="#2B2B2B" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Cart</Text>
-        <View style={styles.placeholder} />
+        <Text style={styles.headerTitle}>My Cart ({cartItems.length})</Text>
+        <TouchableOpacity
+          style={styles.clearButton}
+          onPress={handleClearCart}
+        >
+          <Text style={styles.clearButtonText}>Clear All</Text>
+        </TouchableOpacity>
       </View>
 
-      {cartItems.length === 0 ? (
-        renderEmptyCart()
-      ) : (
-        <>
-          <FlatList
-            data={cartItems}
-            keyExtractor={(item) => item.id}
-            renderItem={renderCartItem}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.cartList}
-          />
-          
-          {renderOrderSummary()}
-          
-          <View style={styles.checkoutContainer}>
-            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-              <Text style={styles.checkoutButtonText}>
-                Go to Checkout ({cartItems.length} items)
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.cartItems}>
+          {cartItems.map((item, index) => renderCartItem(item, index))}
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>Total:</Text>
+          <Text style={styles.totalAmount}>{formatCurrency(cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0))}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.checkoutButton}
+          onPress={() => navigation.navigate('Checkout')}
+        >
+          <Text style={styles.checkoutButtonText}>Go To Checkout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.continueShoppingButton}
+          onPress={() => navigation.navigate('MainTabs', { screen: 'Home' })}
+        >
+          <Text style={styles.continueShoppingButtonText}>Continue Shopping</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
-} 
+};
+
+export default CartScreen; 

@@ -162,12 +162,12 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
               </View>
             </View>
 
-            {/* Khoảng giá */}
+            {/* Price Range */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Khoảng giá</Text>
+              <Text style={styles.sectionTitle}>Price Range</Text>
               <View style={styles.priceRangeContainer}>
                 <Text style={styles.priceRangeText}>
-                  {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])} VNĐ
+                  ${(priceRange[0] / 25000).toFixed(2)} - ${(priceRange[1] / 25000).toFixed(2)}
                 </Text>
                 <Slider
                   style={styles.slider}
@@ -182,9 +182,9 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
               </View>
             </View>
 
-            {/* Sắp xếp */}
+            {/* Sort */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Sắp xếp</Text>
+              <Text style={styles.sectionTitle}>Sort</Text>
               <View style={styles.optionsContainer}>
                 {sortOptions.map((sort) => (
                   <TouchableOpacity
@@ -209,10 +209,10 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
 
           <View style={styles.footer}>
             <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-              <Text style={styles.resetButtonText}>Đặt lại</Text>
+              <Text style={styles.resetButtonText}>Reset</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.applyButton} onPress={handleApply}>
-              <Text style={styles.applyButtonText}>Áp dụng</Text>
+              <Text style={styles.applyButtonText}>Apply</Text>
             </TouchableOpacity>
           </View>
         </View>

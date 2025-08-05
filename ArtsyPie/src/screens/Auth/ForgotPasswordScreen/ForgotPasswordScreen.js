@@ -4,7 +4,7 @@ import {
   KeyboardAvoidingView, Platform, Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import styles from './ForgotPasswordScreen.styles';
 import { validateEmail } from '../../../utils/validateEmail';
 import { useDispatch, useSelector } from 'react-redux';

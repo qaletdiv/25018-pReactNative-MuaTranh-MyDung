@@ -68,12 +68,12 @@ export default StyleSheet.create({
   },
   artist: {
     fontSize: 12,
-    color: '#666',
+    color: COLORS.primary,
     marginBottom: 6,
   },
   compactArtist: {
     fontSize: 9,
-    color: '#666',
+    color: COLORS.primary,
     marginBottom: 3,
   },
   price: {

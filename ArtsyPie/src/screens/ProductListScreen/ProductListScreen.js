@@ -11,15 +11,29 @@ import { useNavigation } from '@react-navigation/native';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import ArtCard from '../../components/ArtCard/ArtCard';
 import SearchFilterModal from '../../components/SearchFilterModal/SearchFilterModal';
-import artworksData from '../../data/artworksData';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchArtworks } from '../../redux/slices/artworksSlice';
 import styles from './ProductListScreen.styles';
 
 export default function ProductListScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { artworks, loading } = useSelector(state => state.artworks);
+  
   const [searchText, setSearchText] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
-  const [filteredProducts, setFilteredProducts] = useState([...artworksData]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  // Load data when component mounts
+  React.useEffect(() => {
+    dispatch(fetchArtworks());
+  }, [dispatch]);
+
+  // Update filtered products when artworks change
+  React.useEffect(() => {
+    setFilteredProducts([...artworks]);
+  }, [artworks]);
 
   // Hàm chỉ cập nhật text, không search ngay
   const handleSearchTextChange = (text) => {
@@ -29,14 +43,14 @@ export default function ProductListScreen() {
   // Hàm thực hiện search khi nhấn Enter hoặc icon search
   const handleSearchSubmit = () => {
     if (searchText.trim() === '') {
-      setFilteredProducts([...artworksData]);
+      setFilteredProducts([...artworks]);
       return;
     }
 
     // Chuẩn hóa chuỗi tìm kiếm
     const normalizedText = searchText.toLowerCase().normalize("NFC");
 
-    const results = artworksData.filter(
+    const results = artworks.filter(
       (item) => {
         // Chuẩn hóa dữ liệu gốc trước khi so sánh
         const normalizedTitle = item.title.toLowerCase().normalize("NFC");
@@ -50,7 +64,6 @@ export default function ProductListScreen() {
   };
 
   const handleFilterPress = () => {
-    console.log('Filter button pressed!');
     setFilterModalVisible(true);
   };
 

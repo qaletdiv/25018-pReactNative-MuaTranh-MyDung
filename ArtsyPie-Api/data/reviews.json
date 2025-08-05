@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "productId": "1",
+    "orderId": "1",
+    "userId": "user1",
+    "rating": 5,
+    "review": "Tuyệt vời! Bức tranh đẹp hơn cả mong đợi.",
+    "createdAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "id": "2",
+    "productId": "2",
+    "orderId": "1",
+    "userId": "user1",
+    "rating": 4,
+    "review": "Chất lượng tốt, giao hàng nhanh.",
+    "createdAt": "2024-01-15T10:35:00.000Z"
+  },
+  {
+    "id": "1754347885071",
+    "productId": "4",
+    "orderId": "3",
+    "userId": 2,
+    "rating": 5,
+    "review": "Fdbhygjnhgfbvcxz fgt",
+    "createdAt": "2025-08-04T22:51:25.071Z"
+  }
+]

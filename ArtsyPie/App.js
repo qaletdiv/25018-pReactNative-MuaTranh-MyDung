@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { store } from './src/redux/store';
+import { loadCartFromStorageAsync } from './src/redux/slices/cartSlice';
 // Navigation
 import MainNavigator from './src/navigation/MainNavigator';
 // Font constant
@@ -21,14 +22,17 @@ export default function App() {
   // THÊM ĐOẠN CODE DEBUG NÀY VÀO
   useEffect(() => {
     const clearAuthDataForDebug = async () => {
-      console.log('DEBUG: Xóa token và user data khi khởi động...');
       await AsyncStorage.removeItem('userToken');
       await AsyncStorage.removeItem('userData');
-      console.log('DEBUG: Đã xóa xong.');
     };
     if (__DEV__) {
       clearAuthDataForDebug();
     }
+  }, []);
+
+  // Load cart từ storage khi app khởi động
+  useEffect(() => {
+    store.dispatch(loadCartFromStorageAsync());
   }, []);
 
   useEffect(() => {

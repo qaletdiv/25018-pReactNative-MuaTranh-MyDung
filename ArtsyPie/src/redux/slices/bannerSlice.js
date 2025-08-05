@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosClient from '../../api/axiosClient';
+import { bannerApi } from '../../api/bannerApi';
 
 export const fetchBanners = createAsyncThunk('banners/fetch', async () => {
-  const res = await axiosClient.get('/home/banner');
+  const res = await bannerApi.getBanners();
   return res.data.banners;
 });
 

@@ -1,20 +1,42 @@
 // CardList.js
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import styles from './CategoryList.styles';
 
 const CardList = ({ data }) => {
-  const renderItem = ({ item }) => {
-    const getImageSource = (src) => {
-      if (!src) return null;
-      return typeof src === 'string' ? { uri: src } : src;
-    };
+  const getImageSource = (src) => {
+    if (!src) return null;
+    
+    // Nếu là require() object (local image)
+    if (typeof src === 'number') {
+      return src;
+    }
+    
+    // Nếu là string URL
+    if (typeof src === 'string') {
+      return { uri: src };
+    }
+    
+    // Fallback
+    return src;
+  };
 
+  const renderItem = ({ item }) => {
     return (
       <TouchableOpacity style={styles.cardContainer} activeOpacity={0.8}>
-        {item.image && (
-          <Image source={getImageSource(item.image)} style={styles.image} />
-        )}
+        <View style={{ width: '100%', height: 200, backgroundColor: '#333' }}>
+          <Image 
+            source={getImageSource(item.image)}
+            style={styles.image}
+            resizeMode="cover"
+            onError={(error) => {
+              // Silent error handling
+            }}
+            onLoad={() => {
+              // Silent success handling
+            }}
+          />
+        </View>
 
         {item.price && (
           <View style={styles.priceTag}>
@@ -36,6 +58,13 @@ const CardList = ({ data }) => {
               <Image
                 source={getImageSource(item.avatar)}
                 style={styles.avatar}
+                resizeMode="cover"
+                onError={(error) => {
+                  // Silent error handling
+                }}
+                onLoad={() => {
+                  // Silent success handling
+                }}
               />
             )}
           </View>
@@ -43,6 +72,14 @@ const CardList = ({ data }) => {
       </TouchableOpacity>
     );
   };
+
+  if (!data || data.length === 0) {
+    return (
+      <View style={{ padding: 20, alignItems: 'center' }}>
+        <Text style={{ color: '#fff' }}>No catalog data</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList

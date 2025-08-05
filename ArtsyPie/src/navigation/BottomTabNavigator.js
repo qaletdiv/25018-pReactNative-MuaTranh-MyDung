@@ -1,21 +1,54 @@
 // src/navigation/BottomTabNavigator.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Feather';
+import { useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SearchScreen from '../screens/SearchScreen/SearchScreen';
 import CartScreen from '../screens/CartScreen/CartScreen';
 import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
-
-import { View, Text } from 'react-native';
+import AccountScreen from '../screens/AccountScreen/AccountScreen';
 
 const Tab = createBottomTabNavigator();
 
-const Placeholder = ({ name }) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>{name} Screen</Text>
-  </View>
-);
+
+const AuthenticatedCartScreen = ({ navigation }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  
+
+  
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+
+      navigation.navigate('LoginScreen');
+    }
+  }, [isAuthenticated, navigation]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  return <CartScreen />;
+};
+
+const AuthenticatedFavoritesScreen = ({ navigation }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  
+
+  
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+
+      navigation.navigate('LoginScreen');
+    }
+  }, [isAuthenticated, navigation]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  return <FavoritesScreen />;
+};
 
 const BottomTabNavigator = () => {
   return (
@@ -35,14 +68,14 @@ const BottomTabNavigator = () => {
               iconName = 'heart';
               break;
             case 'Cart':
-              iconName = 'shopping-cart';
+              iconName = 'cart';
               break;
             case 'Account':
-              iconName = 'user';
+              iconName = 'person';
               break;
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: '#999',
@@ -59,15 +92,15 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Saved" component={FavoritesScreen} />
+      <Tab.Screen name="Saved" component={AuthenticatedFavoritesScreen} />
       <Tab.Screen 
         name="Cart" 
-        component={CartScreen}
+        component={AuthenticatedCartScreen}
         options={{
           tabBarStyle: { display: 'none' }
         }}
       />
-      <Tab.Screen name="Account" children={() => <Placeholder name="Account" />} />
+      <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );
 };

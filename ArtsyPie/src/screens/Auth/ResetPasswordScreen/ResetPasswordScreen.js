@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   Alert
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import styles from './ResetPasswordScreen.styles';
 import { validatePassword } from '../../../utils/validatePassword';
 import { useDispatch, useSelector } from 'react-redux';

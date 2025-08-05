@@ -6,6 +6,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
+    paddingBottom: 40, 
   },
   titleBold: {
     color: COLORS.primary,
@@ -33,15 +34,91 @@ export default StyleSheet.create({
     fontFamily: FONTS.semiBold,
   },
   titleRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginTop: 10,
-  marginBottom: 5,
-},
-
-logo: {
-  width: 35,
-  height: 35,
-  marginRight: 8,
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  logo: {
+    width: 35,
+    height: 35,
+    marginRight: 8,
+  },
+  // Loading states
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 16,
+    textAlign: 'center',
+    fontFamily: FONTS.medium,
+  },
+  sectionLoading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  sectionLoadingText: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 8,
+    fontFamily: FONTS.medium,
+  },
+  // Error states
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#ff6b6b',
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+    fontFamily: FONTS.bold,
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 32,
+    fontFamily: FONTS.regular,
+  },
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
+  },
+  // Empty state
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    fontFamily: FONTS.medium,
+  },
+  categoryList:{
+    marginBottom: 20,
+    paddingBottom: 50, // Tăng padding bottom cho catalog section
+  }
 });

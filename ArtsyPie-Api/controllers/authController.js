@@ -19,7 +19,7 @@ const readUsers = () => {
     return JSON.parse(data);
   } catch (error) {
     console.error("Lỗi khi đọc file users.json:", error);
-    return []; // Trả về mảng rỗng nếu có lỗi
+    return []; 
   }
 };
 
