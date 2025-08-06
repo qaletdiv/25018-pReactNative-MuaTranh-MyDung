@@ -5,6 +5,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
@@ -23,6 +24,7 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
+    paddingTop: 50,
   },
   placeholder: {
     width: 40,
@@ -238,12 +240,14 @@ export default StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+    paddingTop: 50,
   },
   orderDetailsTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
     marginBottom: 15,
+   
   },
   productItem: {
     flexDirection: 'row',

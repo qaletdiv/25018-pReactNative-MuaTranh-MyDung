@@ -1,8 +1,8 @@
 import axiosClient from './axiosClient';
 
 const ordersApi = {
-  getAllOrders: () => {
-    return axiosClient.get('/orders');
+  getAllOrders: (userEmail) => {
+    return axiosClient.get(`/orders?email=${userEmail}`);
   },
 
   getOrderById: (orderId) => {
@@ -10,6 +10,7 @@ const ordersApi = {
   },
 
   createOrder: (orderData) => {
+    console.log('ordersApi.createOrder called with:', JSON.stringify(orderData, null, 2));
     return axiosClient.post('/orders', orderData);
   },
 

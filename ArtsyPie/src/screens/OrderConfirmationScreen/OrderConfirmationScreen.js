@@ -14,12 +14,75 @@ import styles from './OrderConfirmationScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { COLORS } from '../../theme/colors';
 import { clearCart } from '../../redux/slices/cartSlice';
+import { addNewOrder } from '../../redux/slices/ordersSlice';
 
 export default function OrderConfirmationScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const dispatch = useDispatch();
-  const { orderId, total, subtotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod } = route.params;
+  const { orderId, total: totalFromParams, subtotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod } = route.params;
+  
+  // Đảm bảo total luôn có giá trị hợp lệ
+  const total = typeof totalFromParams === 'number' && totalFromParams > 0 ? totalFromParams : 0;
+  
+  // Tính total fallback nếu không có từ params
+  const calculateTotalFallback = () => {
+    const subtotal = items?.reduce((sum, item) => {
+      const product = artworksData.find(p => p.id === item.productId);
+      return sum + (product?.price || 0) * item.quantity;
+    }, 0) || 0;
+    const vat = subtotal * 0.1;
+    const shipping = selectedShippingMethod?.price || 30000;
+    const delivery = selectedDeliveryTime?.price || 50000;
+    return subtotal + vat + shipping + delivery;
+  };
+  
+  const finalTotal = total > 0 ? total : calculateTotalFallback();
+  
+  // Debug: Log dữ liệu nhận được
+  console.log('OrderConfirmation - Route params:', {
+    orderId,
+    totalFromParams,
+    total,
+    finalTotal,
+    totalType: typeof total,
+    subtotal,
+    itemsCount: items?.length,
+    selectedAddress,
+    selectedPayment,
+    selectedDeliveryTime,
+    selectedShippingMethod
+  });
+
+  // Thêm order vào Redux store nếu chưa có
+  React.useEffect(() => {
+    if (orderId && finalTotal > 0) {
+      const newOrder = {
+        id: orderId,
+        orderNumber: orderId,
+        date: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        total: finalTotal,
+        products: items?.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || 'Unknown Product',
+          image: item.product?.image,
+          price: item.product?.price || 0,
+          options: item.selectedOptions ? 
+            `${item.selectedOptions.size}, ${item.selectedOptions.frame}` : 
+            'Standard, No Frame',
+          quantity: item.quantity
+        })) || [],
+        address: selectedAddress,
+        paymentMethod: selectedPayment,
+        deliveryTime: selectedDeliveryTime,
+        shippingMethod: selectedShippingMethod,
+      };
+      
+      console.log('Adding new order to Redux:', newOrder);
+      dispatch(addNewOrder(newOrder));
+    }
+  }, [orderId, finalTotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod]);
   
   // Tạo ngày tháng đơn hàng
   const now = new Date();
@@ -118,6 +181,12 @@ export default function OrderConfirmationScreen() {
         </View>
         <Text style={styles.detailText}>{selectedAddress?.name}</Text>
         <Text style={styles.detailSubtext}>{selectedAddress?.address}</Text>
+        {selectedAddress?.phone && (
+          <Text style={styles.detailSubtext}>Phone: {selectedAddress.phone}</Text>
+        )}
+        {/* {selectedAddress?.email && (
+          <Text style={styles.detailSubtext}>Email: {selectedAddress.email}</Text>
+        )} */}
       </View>
 
       {/* Delivery Method */}
@@ -170,7 +239,7 @@ export default function OrderConfirmationScreen() {
       
       <View style={[styles.costRow, styles.totalRow]}>
         <Text style={styles.totalLabel}>Total Amount</Text>
-        <Text style={styles.totalValue}>{formatCurrency(total)}</Text>
+        <Text style={styles.totalValue}>{formatCurrency(finalTotal)}</Text>
       </View>
     </View>
   );
@@ -184,7 +253,7 @@ export default function OrderConfirmationScreen() {
         </View>
         <Text style={styles.successTitle}>Order Placed Successfully!</Text>
         <Text style={styles.orderId}>Order ID: {orderId}</Text>
-        <Text style={styles.totalAmount}>Total: {formatCurrency(total)}</Text>
+        <Text style={styles.totalAmount}>Total: {formatCurrency(finalTotal)}</Text>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>

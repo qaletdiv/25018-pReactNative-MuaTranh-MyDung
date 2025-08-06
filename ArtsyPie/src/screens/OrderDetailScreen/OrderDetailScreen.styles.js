@@ -5,22 +5,26 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+    
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 10,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e9ecef',
+    paddingTop: 30,
   },
   backButton: {
-    padding: 8,
+    padding: 12,
+    borderRadius: 6,
+    backgroundColor: '#f8f9fa',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#333',
   },
@@ -324,5 +328,20 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
+  },
+
+  // Loading Styles
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 16,
+    textAlign: 'center',
+    fontWeight: '500',
   },
 }); 

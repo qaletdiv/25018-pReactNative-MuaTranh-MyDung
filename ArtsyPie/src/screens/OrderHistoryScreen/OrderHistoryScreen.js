@@ -14,8 +14,11 @@ import styles from './OrderHistoryScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { fetchOrders } from '../../redux/slices/ordersSlice';
 
-// Helper function to map image filenames to require paths
 const getImageSource = (imageName) => {
+  if (imageName && typeof imageName === 'string' && (imageName.startsWith('http') || imageName.startsWith('https'))) {
+    return { uri: imageName };
+  }
+  
   const imageMap = {
     'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
     'modernlsm.jpg': require('../../../assets/Images/Product/modernlsm.jpg'),
@@ -34,11 +37,17 @@ const OrderHistoryScreen = ({ navigation, route }) => {
   const [activeTab, setActiveTab] = useState('ongoing');
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.orders);
+  const { user } = useSelector((state) => state.auth);
   const flatListRef = React.useRef(null);
 
   useEffect(() => {
-    dispatch(fetchOrders());
-  }, [dispatch]);
+    if (user?.email) {
+      dispatch(fetchOrders(user.email));
+    }
+  }, [dispatch, user?.email]);
+
+  // console.log('OrderHistoryScreen - orders:', orders);
+  // console.log('OrderHistoryScreen - filteredOrders:', filteredOrders);
   
   // Nhận thông tin đơn hàng mới từ OrderConfirmationScreen
   const { newOrderId, highlightNewOrder } = route.params || {};
@@ -48,7 +57,6 @@ const OrderHistoryScreen = ({ navigation, route }) => {
     if (highlightNewOrder && newOrderId) {
       setActiveTab('ongoing');
       
-      // Scroll đến đơn hàng mới sau khi component mount
       setTimeout(() => {
         const newOrderIndex = filteredOrders.findIndex(order => order.id === newOrderId);
         if (newOrderIndex !== -1) {
@@ -107,6 +115,15 @@ const OrderHistoryScreen = ({ navigation, route }) => {
   });
 
   const renderOrderItem = ({ item }) => {
+    // Debug: Log order item data
+    // console.log('OrderHistoryScreen - rendering order:', {
+    //   id: item.id,
+    //   total: item.total,
+    //   totalType: typeof item.total,
+    //   status: item.status,
+    //   products: item.products
+    // });
+    
     // Highlight đơn hàng mới nếu có
     const isNewOrder = newOrderId && item.id === newOrderId;
     
@@ -116,7 +133,7 @@ const OrderHistoryScreen = ({ navigation, route }) => {
           styles.orderItem,
           isNewOrder && { borderColor: '#FFA500', borderWidth: 2 }
         ]}
-        onPress={() => navigation.navigate('OrderDetail', { order: item })}
+        onPress={() => navigation.navigate('OrderDetail', { orderId: item.id })}
       >
         <View style={styles.orderHeader}>
           <View>
@@ -133,39 +150,58 @@ const OrderHistoryScreen = ({ navigation, route }) => {
           </View>
         </View>
 
-        {item.products && item.products.map((product, index) => (
-          <View key={`${item.id}_${product.id}_${index}`} style={styles.productItem}>
-            <Image 
-              source={getImageSource(product.image)}
-              style={styles.productImage} 
-            />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>{product.name}</Text>
-              <Text style={styles.productSize}>{product.options || product.size}</Text>
-              <Text style={styles.productPrice}>{formatCurrency(product.price)}</Text>
+        {(item.products || item.items || []).map((product, index) => {
+          // Xử lý cả hai format: products (cũ) và items (mới)
+          const productData = product.product || product; 
+          const productName = productData.name || productData.title;
+          const productImage = productData.image;
+          const productPrice = productData.price || 0;
+          const productQuantity = product.quantity || 1;
+          const productOptions = product.selectedOptions ? 
+            `${product.selectedOptions.size}, ${product.selectedOptions.frame}` : 
+            (product.options || product.size || 'Standard, No Frame');
+          
+          return (
+            <View key={`${item.id}_${productData.id || product.id}_${index}`} style={styles.productItem}>
+              <Image 
+                source={getImageSource(productImage)}
+                style={styles.productImage} 
+              />
+              <View style={styles.productInfo}>
+                <Text style={styles.productName}>{productName}</Text>
+                <Text style={styles.productSize}>{productOptions}</Text>
+                <Text style={styles.productPrice}>{formatCurrency(productPrice * productQuantity)}</Text>
+              </View>
+              <View style={styles.productActions}>
+                {item.status === 'completed' && !product.hasReview && (
+                  <TouchableOpacity
+                    style={styles.reviewButton}
+                    onPress={() => navigation.navigate('LeaveReview', { product: productData, order: item })}
+                  >
+                    <Text style={styles.reviewButtonText}>Leave Review</Text>
+                  </TouchableOpacity>
+                )}
+                {item.status === 'completed' && product.hasReview && (
+                  <View style={styles.ratingContainer}>
+                    <Ionicons name="star" size={16} color="#FFD700" />
+                    <Text style={styles.ratingText}>{product.rating}/5</Text>
+                  </View>
+                )}
+              </View>
             </View>
-            <View style={styles.productActions}>
-              {item.status === 'completed' && !product.hasReview && (
-                <TouchableOpacity
-                  style={styles.reviewButton}
-                  onPress={() => navigation.navigate('LeaveReview', { product, order: item })}
-                >
-                  <Text style={styles.reviewButtonText}>Leave Review</Text>
-                </TouchableOpacity>
-              )}
-              {item.status === 'completed' && product.hasReview && (
-                <View style={styles.ratingContainer}>
-                  <Ionicons name="star" size={16} color="#FFD700" />
-                  <Text style={styles.ratingText}>{product.rating}/5</Text>
-                </View>
-              )}
-            </View>
-          </View>
-        ))}
+          );
+        })}
 
         <View style={styles.orderFooter}>
           <Text style={styles.totalLabel}>Total:</Text>
-          <Text style={styles.totalAmount}>{formatCurrency(item.total)}</Text>
+          <Text style={styles.totalAmount}>
+            {formatCurrency(
+              item.total || 
+              item.totalAmount || 
+              (item.products?.reduce((sum, product) => sum + (product.price || 0) * (product.quantity || 1), 0) || 0) ||
+              (item.items?.reduce((sum, item) => sum + (item.product?.price || 0) * (item.quantity || 1), 0) || 0)
+            )}
+          </Text>
         </View>
       </TouchableOpacity>
     );

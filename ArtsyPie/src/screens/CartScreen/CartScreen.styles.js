@@ -107,6 +107,12 @@ export default StyleSheet.create({
     fontSize: 12,
     color: '#6c757d',
     fontWeight: '600',
+    marginBottom: 4,
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#e74c3c',
     marginBottom: 12,
   },
   bottomRow: {

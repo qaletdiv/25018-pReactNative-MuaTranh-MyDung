@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,23 @@ import {
   SafeAreaView,
   Image,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './OrderDetailScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { COLORS } from '../../theme/colors';
+import { fetchOrderDetail } from '../../redux/slices/ordersSlice';
 
 const getImageSource = (imageName) => {
+  // Nếu là URL, trả về object với uri
+  if (imageName && typeof imageName === 'string' && (imageName.startsWith('http') || imageName.startsWith('https'))) {
+    return { uri: imageName };
+  }
+  
+  // Nếu là local image name
   const imageMap = {
     'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
     'modernlsm.jpg': require('../../../assets/Images/Product/modernlsm.jpg'),
@@ -86,7 +95,27 @@ const getStatusIcon = (status) => {
 export default function OrderDetailScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { order } = route.params;
+  const dispatch = useDispatch();
+  const { currentOrder, loading } = useSelector((state) => state.orders);
+  
+  // Lấy order từ route params hoặc từ Redux store
+  const orderFromParams = route.params?.order;
+  const orderId = orderFromParams?.id || route.params?.orderId;
+  
+  // Gọi API để lấy order detail nếu có orderId
+  useEffect(() => {
+    if (orderId && !currentOrder) {
+      dispatch(fetchOrderDetail(orderId));
+    }
+  }, [orderId, dispatch, currentOrder]);
+  
+  // Sử dụng order từ params nếu có, không thì dùng từ Redux
+  const order = orderFromParams || currentOrder;
+  
+  // Debug log
+  console.log('OrderDetailScreen - order:', order);
+  console.log('OrderDetailScreen - orderId:', orderId);
+  console.log('OrderDetailScreen - loading:', loading);
 
   const renderOrderHeader = () => (
     <View style={styles.orderHeader}>
@@ -166,28 +195,40 @@ export default function OrderDetailScreen() {
   const renderProducts = () => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Products</Text>
-      {order.products && order.products.map((product, index) => (
-        <View key={`${order.id}_${product.id}_${index}`} style={styles.productItem}>
-          <Image 
-            source={getImageSource(product.image)}
-            style={styles.productImage} 
-          />
-          <View style={styles.productInfo}>
-            <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productOptions}>{product.options || product.size}</Text>
-            <Text style={styles.productQuantity}>Qty: {product.quantity}</Text>
-            <Text style={styles.productPrice}>{formatCurrency(product.price)}</Text>
+      {(order?.products || order?.items || []).map((product, index) => {
+        // Xử lý cả hai format: products (cũ) và items (mới)
+        const productData = product.product || product; // items có product.product, products có product trực tiếp
+        const productName = productData.name || productData.title;
+        const productImage = productData.image;
+        const productPrice = productData.price || 0;
+        const productQuantity = product.quantity || 1;
+        const productOptions = product.selectedOptions ? 
+          `${product.selectedOptions.size}, ${product.selectedOptions.frame}` : 
+          (product.options || product.size || 'Standard, No Frame');
+        
+        return (
+          <View key={`${order.id}_${productData.id || product.id}_${index}`} style={styles.productItem}>
+            <Image 
+              source={getImageSource(productImage)}
+              style={styles.productImage} 
+            />
+            <View style={styles.productInfo}>
+              <Text style={styles.productName}>{productName}</Text>
+              <Text style={styles.productOptions}>{productOptions}</Text>
+              <Text style={styles.productQuantity}>Qty: {productQuantity}</Text>
+              <Text style={styles.productPrice}>{formatCurrency(productPrice * productQuantity)}</Text>
+            </View>
+            {order.status === 'completed' && !product.hasReview && (
+              <TouchableOpacity
+                style={styles.reviewButton}
+                onPress={() => navigation.navigate('LeaveReview', { product: productData, order })}
+              >
+                <Text style={styles.reviewButtonText}>Leave Review</Text>
+              </TouchableOpacity>
+            )}
           </View>
-          {order.status === 'completed' && !product.hasReview && (
-            <TouchableOpacity
-              style={styles.reviewButton}
-              onPress={() => navigation.navigate('LeaveReview', { product, order })}
-            >
-              <Text style={styles.reviewButtonText}>Leave Review</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 
@@ -198,8 +239,15 @@ export default function OrderDetailScreen() {
         <Ionicons name="location" size={20} color={COLORS.primary} />
         <View style={styles.infoContent}>
           <Text style={styles.infoLabel}>Delivery Address</Text>
-          <Text style={styles.infoValue}>{order.address?.name}</Text>
-          <Text style={styles.infoSubtext}>{order.address?.address}</Text>
+          <Text style={styles.infoValue}>
+            {order.shippingAddress?.fullName || order.address?.name || 'Unknown'}
+          </Text>
+          <Text style={styles.infoSubtext}>
+            {order.shippingAddress ? 
+              `${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.district}` :
+              order.address?.address || 'Unknown Address'
+            }
+          </Text>
         </View>
       </View>
       
@@ -207,8 +255,12 @@ export default function OrderDetailScreen() {
         <Ionicons name="car" size={20} color={COLORS.primary} />
         <View style={styles.infoContent}>
           <Text style={styles.infoLabel}>Delivery Method</Text>
-          <Text style={styles.infoValue}>{order.deliveryTime?.name}</Text>
-          <Text style={styles.infoSubtext}>{order.deliveryTime?.description}</Text>
+          <Text style={styles.infoValue}>
+            {order.deliveryTime?.name || order.shippingMethod || 'Standard'}
+          </Text>
+          <Text style={styles.infoSubtext}>
+            {order.deliveryTime?.description || 'Standard delivery'}
+          </Text>
         </View>
       </View>
 
@@ -216,7 +268,9 @@ export default function OrderDetailScreen() {
         <Ionicons name="card" size={20} color={COLORS.primary} />
         <View style={styles.infoContent}>
           <Text style={styles.infoLabel}>Payment Method</Text>
-          <Text style={styles.infoValue}>{order.paymentMethod?.name}</Text>
+          <Text style={styles.infoValue}>
+            {order.paymentMethod?.method || order.paymentMethod?.name || 'Unknown'}
+          </Text>
         </View>
       </View>
     </View>
@@ -225,21 +279,16 @@ export default function OrderDetailScreen() {
   const renderOrderSummary = () => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Order Summary</Text>
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Subtotal</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(order.total)}</Text>
-      </View>
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Shipping</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(order.shippingMethod?.price || 0)}</Text>
-      </View>
-      <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Delivery</Text>
-        <Text style={styles.summaryValue}>{formatCurrency(order.deliveryTime?.price || 0)}</Text>
-      </View>
       <View style={[styles.summaryRow, styles.totalRow]}>
         <Text style={styles.totalLabel}>Total</Text>
-        <Text style={styles.totalValue}>{formatCurrency(order.total)}</Text>
+        <Text style={styles.totalValue}>
+          {formatCurrency(
+            order.total || 
+            order.totalAmount || 
+            (order.products?.reduce((sum, product) => sum + (product.price || 0) * (product.quantity || 1), 0) || 0) ||
+            (order.items?.reduce((sum, item) => sum + (item.product?.price || 0) * (item.quantity || 1), 0) || 0)
+          )}
+        </Text>
       </View>
     </View>
   );
@@ -272,6 +321,35 @@ export default function OrderDetailScreen() {
     </View>
   );
 
+  // Loading state
+  if (loading || !order) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        
+        {/* Header */}
+        <View style={styles.header}>
+                  <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            console.log('Back button pressed (loading state)');
+            navigation.goBack();
+          }}
+        >
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+          <Text style={styles.headerTitle}>Order Details</Text>
+          <View style={styles.placeholder} />
+        </View>
+
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={styles.loadingText}>Loading order details...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -280,7 +358,10 @@ export default function OrderDetailScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Back button pressed');
+            navigation.goBack();
+          }}
         >
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>

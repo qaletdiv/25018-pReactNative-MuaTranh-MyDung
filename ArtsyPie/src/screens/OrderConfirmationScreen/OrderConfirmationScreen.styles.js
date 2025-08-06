@@ -135,6 +135,7 @@ export default StyleSheet.create({
   detailSubtext: {
     fontSize: 14,
     color: '#666',
+    paddingTop:5,
   },
   costRow: {
     flexDirection: 'row',

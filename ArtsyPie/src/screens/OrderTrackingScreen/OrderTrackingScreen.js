@@ -13,8 +13,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import styles from './OrderTrackingScreen.styles';
 import { COLORS } from '../../theme/colors';
 import { formatCurrency } from '../../utils/formatCurrency';
-
-// Helper function to map image filenames to require paths
 const getImageSource = (imageName) => {
   const imageMap = {
     'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
@@ -35,7 +33,6 @@ export default function OrderTrackingScreen() {
   const route = useRoute();
   const { orderId } = route.params;
 
-  // Mock tracking data - in real app this would come from API
   const [trackingData, setTrackingData] = useState({
     orderId: orderId,
     status: 'shipping',
@@ -127,9 +124,7 @@ export default function OrderTrackingScreen() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      // Simulate API call to refresh tracking data
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // In real app, you would fetch updated tracking data here
       Alert.alert('Success', 'Tracking information updated');
     } catch (error) {
       Alert.alert('Error', 'Failed to update tracking information');
@@ -145,7 +140,6 @@ export default function OrderTrackingScreen() {
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Call', onPress: () => {
-          // In real app, you would use Linking to make a phone call
           Alert.alert('Call', `Calling ${trackingData.courierPhone}`);
         }}
       ]

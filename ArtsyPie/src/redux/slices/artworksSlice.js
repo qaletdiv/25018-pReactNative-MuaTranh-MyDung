@@ -8,7 +8,6 @@ export const fetchArtworks = createAsyncThunk(
       const response = await axiosClient.get('/artworks');
       return response.data;
     } catch (error) {
-      // Fallback to mock data if API fails
 
       const mockArtworks = [
         {

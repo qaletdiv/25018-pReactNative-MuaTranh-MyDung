@@ -48,26 +48,19 @@ export default function ProductDetailScreen() {
     quantity: 1,
   });
 
-  // Auto slider timer
+  // Auto slider 
   const sliderRef = useRef(null);
 
-  // Sử dụng mảng images từ dữ liệu sản phẩm, nếu không có thì fallback về image đơn
   let images = [];
   
   if (item?.images && Array.isArray(item.images)) {
     images = item.images;
   } else if (item?.image) {
-    // Nếu có image đơn, tạo mảng với 1 item
     images = [{ uri: item.image }];
   }
 
-  // Đảm bảo images luôn có ít nhất 1 item và format đúng
   const safeImages = images.length > 0 ? images : [{ uri: 'https://picsum.photos/400/600?random=1' }];
 
-  // Debug log để kiểm tra dữ liệu
-
-
-  // Lấy danh sách tác phẩm của cùng tác giả
   const getArtistWorks = () => {
     if (!item?.artist || !artworks) return [];
     return artworks.filter(art => art.artist === item.artist && art.id !== item.id);
@@ -78,12 +71,11 @@ export default function ProductDetailScreen() {
     setCurrentImageIndex(0);
   }, [safeImages]);
 
-  // Auto slider effect 
+  // Auto slider 
   useEffect(() => {
     if (safeImages.length <= 1) return;
 
     const timer = setInterval(() => {
-      // Đảm bảo currentImageIndex là số hợp lệ
       const validCurrentIndex = isNaN(currentImageIndex) || currentImageIndex < 0 ? 0 : currentImageIndex;
       const nextIndex = (validCurrentIndex + 1) % safeImages.length;
       
@@ -94,7 +86,6 @@ export default function ProductDetailScreen() {
         });
         setCurrentImageIndex(nextIndex);
       } catch (error) {
-        // Fallback: sử dụng scrollToOffset nếu scrollToIndex thất bại
         sliderRef.current?.scrollToOffset({
           x: nextIndex * width,
           animated: true
@@ -161,7 +152,6 @@ export default function ProductDetailScreen() {
       return;
     }
 
-    // Sử dụng local state trực tiếp để đảm bảo hoạt động
     if (isFavorite) {
       dispatch(removeFromFavorites(item.id));
     } else {
@@ -203,7 +193,6 @@ export default function ProductDetailScreen() {
         keyExtractor={(item, index) => `image-${index}`}
         onMomentumScrollEnd={(event) => {
           const index = Math.round(event.nativeEvent.contentOffset.x / width);
-          // Đảm bảo index hợp lệ
           const validIndex = Math.max(0, Math.min(index, safeImages.length - 1));
           setCurrentImageIndex(validIndex);
         }}
@@ -541,11 +530,10 @@ export default function ProductDetailScreen() {
                 style={styles.popupArtworkItem}
                                  onPress={() => {
                    setShowArtistPopup(false);
-                   // Tạo một item giả để navigate đến ProductDetail
                    const fakeItem = {
                      ...artwork,
-                     image: artwork.image, // Đảm bảo có thuộc tính image
-                     images: [{ uri: artwork.image }], // Thêm mảng images cho carousel với format đúng
+                     image: artwork.image, 
+                     images: [{ uri: artwork.image }], 
                      description: 'A beautiful artwork showcasing the artist\'s unique style and creative vision.',
                      type: 'Oil Painting',
                      style: 'Modern'

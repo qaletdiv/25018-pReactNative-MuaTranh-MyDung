@@ -14,7 +14,6 @@ export const fetchAddressesAsync = createAsyncThunk(
     try {
       const response = await addressApi.getAddresses();
   
-      // API trả về { success: true, addresses: [...] }
       return response.data.addresses || [];
     } catch (error) {
       console.error('AddressesSlice: Error fetching addresses', error);
@@ -30,7 +29,6 @@ export const addAddressAsync = createAsyncThunk(
   
       const response = await addressApi.addAddress(addressData);
       
-      // API trả về { success: true, message: '...', address: {...} }
       return response.data.address;
     } catch (error) {
       console.error('AddressesSlice: Error adding address', error);
@@ -44,7 +42,7 @@ export const updateAddressAsync = createAsyncThunk(
   async ({ addressId, addressData }, { rejectWithValue }) => {
     try {
       const response = await addressApi.updateAddress(addressId, addressData);
-      // API trả về { success: true, message: '...', address: {...} }
+
       return response.data.address;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Lỗi khi cập nhật địa chỉ');

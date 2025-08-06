@@ -119,6 +119,9 @@ const CartScreen = () => {
               'Standard, No Frame'
             }
           </Text>
+          <Text style={styles.productPrice}>
+            {formatCurrency((item.product?.price || 0) * item.quantity)}
+          </Text>
           <View style={styles.bottomRow}>
             <View style={styles.quantityContainer}>
               <TouchableOpacity

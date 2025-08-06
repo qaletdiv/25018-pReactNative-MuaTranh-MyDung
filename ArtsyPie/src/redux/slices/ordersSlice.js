@@ -4,9 +4,9 @@ import ordersApi from '../../api/ordersApi';
 // Async thunks
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
-  async (_, { rejectWithValue }) => {
+  async (userEmail, { rejectWithValue }) => {
     try {
-      const response = await ordersApi.getAllOrders();
+      const response = await ordersApi.getAllOrders(userEmail);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Cannot load orders');
@@ -30,9 +30,12 @@ export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async (orderData, { rejectWithValue }) => {
     try {
+      console.log('Creating order with data:', JSON.stringify(orderData, null, 2));
       const response = await ordersApi.createOrder(orderData);
-      return response.data.data;
+      console.log('Order creation response:', response.data);
+      return response.data.data || response.data;
     } catch (error) {
+      console.error('Order creation error:', error.response?.data || error.message);
       return rejectWithValue(error.response?.data?.message || 'Cannot create order');
     }
   }
@@ -74,19 +77,23 @@ const ordersSlice = createSlice({
       state.currentOrder = action.payload;
     },
     addNewOrder: (state, action) => {
+      console.log('addNewOrder called with:', action.payload);
+      
       const existingOrder = state.orders.find(order => order.id === action.payload.id);
       if (existingOrder) {
-
+        console.log('Order already exists, updating...');
+        // Update existing order
+        Object.assign(existingOrder, action.payload);
         return;
       }
       
       const newOrder = {
-        id: action.payload.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        orderNumber: action.payload.id || `ORD-${new Date().getFullYear()}-${String(state.orders.length + 1).padStart(3, '0')}`,
-        date: action.payload.orderDate || new Date().toISOString().split('T')[0],
+        id: action.payload.id || `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        orderNumber: action.payload.orderNumber || action.payload.id || `ORD-${new Date().getFullYear()}-${String(state.orders.length + 1).padStart(3, '0')}`,
+        date: action.payload.date || action.payload.orderDate || new Date().toISOString().split('T')[0],
         status: action.payload.status || 'pending',
-        total: action.payload.total,
-        products: action.payload.products.map((product, index) => ({
+        total: action.payload.total || 0,
+        products: (action.payload.products || []).map((product, index) => ({
           ...product,
           id: product.id || `${action.payload.id}_product_${index}`,
           hasReview: false,
@@ -97,7 +104,18 @@ const ordersSlice = createSlice({
         deliveryTime: action.payload.deliveryTime,
         shippingMethod: action.payload.shippingMethod,
       };
+      
+      console.log('Adding new order to state:', newOrder);
+      // Thêm order mới vào đầu danh sách
       state.orders.unshift(newOrder);
+      
+      // Sắp xếp lại toàn bộ danh sách theo createdAt
+      state.orders.sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.date || 0);
+        const dateB = new Date(b.createdAt || b.date || 0);
+        return dateB - dateA; // Sắp xếp giảm dần (mới nhất trước)
+      });
+      
       state.success = 'Your order was successfully created';
     },
   },
@@ -108,10 +126,19 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-      })
+          .addCase(fetchOrders.fulfilled, (state, action) => {
+      state.loading = false;
+      console.log('fetchOrders.fulfilled - API response:', action.payload);
+      
+      // Sắp xếp orders theo createdAt (mới nhất ở đầu)
+      const sortedOrders = action.payload.sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.date || 0);
+        const dateB = new Date(b.createdAt || b.date || 0);
+        return dateB - dateA; // Sắp xếp giảm dần (mới nhất trước)
+      });
+      
+      state.orders = sortedOrders;
+    })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -141,6 +168,14 @@ const ordersSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.orders.unshift(action.payload);
+        
+        // Sắp xếp lại toàn bộ danh sách theo createdAt
+        state.orders.sort((a, b) => {
+          const dateA = new Date(a.createdAt || a.date || 0);
+          const dateB = new Date(b.createdAt || b.date || 0);
+          return dateB - dateA; // Sắp xếp giảm dần (mới nhất trước)
+        });
+        
         state.success = 'Your order was successfully created';
       })
       .addCase(createOrder.rejected, (state, action) => {

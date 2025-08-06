@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import styles from './DeliveryTimeSelectionScreen.styles';
 import { COLORS } from '../../theme/colors';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function DeliveryTimeSelectionScreen() {
   const navigation = useNavigation();
@@ -104,7 +105,7 @@ export default function DeliveryTimeSelectionScreen() {
                 styles.deliveryPrice,
                 selectedDeliveryTime === option.id && styles.selectedDeliveryPrice,
               ]}>
-                {option.price.toLocaleString()} VND
+                {formatCurrency(option.price)}
               </Text>
             </View>
             <Text style={[
