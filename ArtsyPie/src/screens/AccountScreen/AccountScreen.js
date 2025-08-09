@@ -75,12 +75,6 @@ const AccountScreen = ({ navigation }) => {
       icon: 'card',
       onPress: () => navigation.navigate('PaymentMethod'),
     },
-    {
-      id: 'searchHistory',
-      title: 'Search History',
-      icon: 'time',
-      onPress: () => navigation.navigate('SearchHistory'),
-    },
   ];
 
   const renderMenuItem = (item) => (
@@ -168,7 +162,7 @@ const AccountScreen = ({ navigation }) => {
             <Ionicons name="person" size={40} color={styles.avatarText.color} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user?.name || 'User'}</Text>
+            <Text style={styles.userName}>{user?.fullName || user?.name || 'User'}</Text>
             <Text style={styles.userEmail}>{user?.email || 'user@example.com'}</Text>
           </View>
         </View>

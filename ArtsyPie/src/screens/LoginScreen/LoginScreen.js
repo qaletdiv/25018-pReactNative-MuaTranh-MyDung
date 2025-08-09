@@ -142,7 +142,7 @@ export default function LoginScreen({ navigation }) {
       {/* Forgot Password */}
       <Text style={styles.forgotText}>
         Forgot your password?{' '}
-        <Text style={styles.link} onPress={() => navigation.replace('ForgotPasswordScreen')}>
+        <Text style={styles.link} onPress={() => navigation.navigate('ResetPasswordScreen')}>
             Reset your password
         </Text>
       </Text>

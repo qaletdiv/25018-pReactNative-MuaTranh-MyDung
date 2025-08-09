@@ -82,6 +82,22 @@ export default StyleSheet.create({
     marginBottom: 12,
     textDecorationLine: 'underline',
   },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  originalPrice: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#999',
+    textDecorationLine: 'line-through',
+  },
+  discountedPrice: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FF6B6B',
+  },
   price: {
     fontSize: 28,
     fontWeight: '700',

@@ -172,9 +172,17 @@ export default function AddressSelectionScreen() {
     // Lấy địa chỉ đã chọn
     const selectedAddressData = addresses.find(addr => addr.id === selectedAddress);
     
+    // Đảm bảo địa chỉ có đầy đủ thông tin cần thiết
+    const addressToPass = {
+      ...selectedAddressData,
+      name: selectedAddressData?.name || selectedAddressData?.fullName || 'Unknown',
+      fullName: selectedAddressData?.fullName || selectedAddressData?.name || 'Unknown',
+      phone: selectedAddressData?.phone || '0123456789',
+    };
+    
     // Chỉ truyền địa chỉ đã chọn, KHÔNG truyền delivery time để tránh conflict
     navigation.navigate('Checkout', { 
-      selectedAddress: selectedAddressData
+      selectedAddress: addressToPass
       // Không truyền selectedDeliveryTime để tránh reset delivery time
     });
   };
@@ -190,11 +198,6 @@ export default function AddressSelectionScreen() {
           <View style={styles.addressInfo}>
             <View style={styles.addressNameRow}>
               <Text style={styles.addressName}>{address.name}</Text>
-              {address.isDefault && (
-                <View style={styles.defaultBadge}>
-                  <Text style={styles.defaultText}>Default</Text>
-                </View>
-              )}
             </View>
             <Text style={styles.addressText}>{address.address}</Text>
           </View>

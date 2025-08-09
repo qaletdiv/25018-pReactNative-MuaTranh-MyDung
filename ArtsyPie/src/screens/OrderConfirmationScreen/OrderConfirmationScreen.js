@@ -157,9 +157,14 @@ export default function OrderConfirmationScreen() {
           </Text>
           <Text style={styles.productQuantity}>Qty: {item.quantity}</Text>
         </View>
-        <Text style={styles.productPrice}>
-          {formatCurrency(productPrice * item.quantity)}
-        </Text>
+        <View style={styles.priceContainer}>
+          <Text style={styles.originalPrice}>
+            {formatCurrency((productPrice * 1.05) * item.quantity)}
+          </Text>
+          <Text style={styles.discountedPrice}>
+            {formatCurrency(productPrice * item.quantity)}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -179,14 +184,14 @@ export default function OrderConfirmationScreen() {
           <Ionicons name="location" size={20} color={COLORS.primary} />
           <Text style={styles.detailTitle}>Delivery Address</Text>
         </View>
-        <Text style={styles.detailText}>{selectedAddress?.name}</Text>
-        <Text style={styles.detailSubtext}>{selectedAddress?.address}</Text>
+        <Text style={styles.detailText}>{selectedAddress?.name || selectedAddress?.fullName || 'Unknown Address'}</Text>
+        <Text style={styles.detailSubtext}>{selectedAddress?.address || 'No address provided'}</Text>
         {selectedAddress?.phone && (
           <Text style={styles.detailSubtext}>Phone: {selectedAddress.phone}</Text>
         )}
-        {/* {selectedAddress?.email && (
-          <Text style={styles.detailSubtext}>Email: {selectedAddress.email}</Text>
-        )} */}
+        {selectedAddress?.fullName && selectedAddress?.fullName !== selectedAddress?.name && (
+          <Text style={styles.detailSubtext}>Name: {selectedAddress.fullName}</Text>
+        )}
       </View>
 
       {/* Delivery Method */}

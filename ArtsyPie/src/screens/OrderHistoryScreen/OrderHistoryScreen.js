@@ -14,11 +14,14 @@ import styles from './OrderHistoryScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { fetchOrders } from '../../redux/slices/ordersSlice';
 
+// Helper function to map image filenames to require paths
 const getImageSource = (imageName) => {
+  // Nếu là URL, trả về object với uri
   if (imageName && typeof imageName === 'string' && (imageName.startsWith('http') || imageName.startsWith('https'))) {
     return { uri: imageName };
   }
   
+  // Nếu là local image name
   const imageMap = {
     'impressionlsm.jpg': require('../../../assets/Images/Product/impressionlsm.jpg'),
     'modernlsm.jpg': require('../../../assets/Images/Product/modernlsm.jpg'),
@@ -46,8 +49,9 @@ const OrderHistoryScreen = ({ navigation, route }) => {
     }
   }, [dispatch, user?.email]);
 
-  // console.log('OrderHistoryScreen - orders:', orders);
-  // console.log('OrderHistoryScreen - filteredOrders:', filteredOrders);
+  // Debug: Log orders data
+  console.log('OrderHistoryScreen - orders:', orders);
+  console.log('OrderHistoryScreen - filteredOrders:', filteredOrders);
   
   // Nhận thông tin đơn hàng mới từ OrderConfirmationScreen
   const { newOrderId, highlightNewOrder } = route.params || {};
@@ -57,6 +61,7 @@ const OrderHistoryScreen = ({ navigation, route }) => {
     if (highlightNewOrder && newOrderId) {
       setActiveTab('ongoing');
       
+      // Scroll đến đơn hàng mới sau khi component mount
       setTimeout(() => {
         const newOrderIndex = filteredOrders.findIndex(order => order.id === newOrderId);
         if (newOrderIndex !== -1) {
@@ -116,13 +121,13 @@ const OrderHistoryScreen = ({ navigation, route }) => {
 
   const renderOrderItem = ({ item }) => {
     // Debug: Log order item data
-    // console.log('OrderHistoryScreen - rendering order:', {
-    //   id: item.id,
-    //   total: item.total,
-    //   totalType: typeof item.total,
-    //   status: item.status,
-    //   products: item.products
-    // });
+    console.log('OrderHistoryScreen - rendering order:', {
+      id: item.id,
+      total: item.total,
+      totalType: typeof item.total,
+      status: item.status,
+      products: item.products
+    });
     
     // Highlight đơn hàng mới nếu có
     const isNewOrder = newOrderId && item.id === newOrderId;
@@ -152,7 +157,7 @@ const OrderHistoryScreen = ({ navigation, route }) => {
 
         {(item.products || item.items || []).map((product, index) => {
           // Xử lý cả hai format: products (cũ) và items (mới)
-          const productData = product.product || product; 
+          const productData = product.product || product; // items có product.product, products có product trực tiếp
           const productName = productData.name || productData.title;
           const productImage = productData.image;
           const productPrice = productData.price || 0;

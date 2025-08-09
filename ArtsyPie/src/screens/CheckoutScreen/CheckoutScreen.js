@@ -249,11 +249,11 @@ export default function CheckoutScreen() {
          total: result.total || calculateTotal(),
          subtotal: calculateSubtotal(),
          items: currentCartItems,
-         selectedAddress: {
-           name: currentAddress?.fullName || currentAddress?.name || 'Unknown',
-           address: `${currentAddress?.address || currentAddress?.streetAddress || 'Unknown Address'}, ${currentAddress?.city || 'Unknown City'}, ${currentAddress?.district || currentAddress?.state || 'Unknown District'}`,
-           phone: currentAddress?.phone || '0123456789',
-           email: currentAddress?.email || 'user@example.com'
+         selectedAddress: currentAddress || {
+           name: 'Unknown',
+           address: 'Unknown Address',
+           phone: '0123456789',
+           email: 'user@example.com'
          },
          selectedPayment: selectedPaymentMethod,
          selectedDeliveryTime: selectedDelivery,
@@ -300,13 +300,42 @@ export default function CheckoutScreen() {
             <View style={styles.addressHeader}>
               <Ionicons name="location" size={16} color={COLORS.primary} />
               <Text style={styles.addressName}>
-                {currentAddress?.name || 'Home'}
+                {currentAddress?.name || currentAddress?.fullName || 'Home'}
               </Text>
             </View>
             <Text style={styles.addressText}>
               {currentAddress?.address || '123 Main St, Anytown, USA 12345'}
             </Text>
           </View>
+        </View>
+        
+        {/* Cart Items Preview */}
+        <View style={styles.cartItemsPreview}>
+          <Text style={styles.cartItemsTitle}>Items in Cart ({currentCartItems.length})</Text>
+          {currentCartItems.slice(0, 3).map((item, index) => (
+            <View key={`${item.id}_${index}`} style={styles.cartItemPreview}>
+              <Image 
+                source={item.product?.image ? 
+                  (typeof item.product.image === 'string' && item.product.image.startsWith('http') 
+                    ? { uri: item.product.image } 
+                    : item.product.image)
+                  : require('../../../assets/Images/Product/plus1.jpg')
+                } 
+                style={styles.cartItemImage} 
+              />
+              <View style={styles.cartItemInfo}>
+                <Text style={styles.cartItemName}>{item.product?.name || 'Unknown Product'}</Text>
+                <Text style={styles.cartItemArtist}>{item.product?.artist || 'Unknown Artist'}</Text>
+                <Text style={styles.cartItemQuantity}>Qty: {item.quantity}</Text>
+              </View>
+              <Text style={styles.cartItemPrice}>
+                {formatCurrency((item.product?.price || 0) * item.quantity)}
+              </Text>
+            </View>
+          ))}
+          {currentCartItems.length > 3 && (
+            <Text style={styles.moreItemsText}>+{currentCartItems.length - 3} more items</Text>
+          )}
         </View>
       </View>
     );
@@ -412,7 +441,10 @@ export default function CheckoutScreen() {
       <View style={styles.summaryCard}>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Sub-total:</Text>
-          <Text style={styles.summaryValue}>{formatCurrency(calculateSubtotal())}</Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.originalPrice}>{formatCurrency(calculateSubtotal() * 1.05)}</Text>
+            <Text style={styles.discountedPrice}>{formatCurrency(calculateSubtotal())}</Text>
+          </View>
         </View>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>VAT (10%):</Text>

@@ -40,7 +40,9 @@ export default function NewAddressScreen() {
         const updatedAddress = {
           ...editAddress,
           name: addressNickname,
+          fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
+          phone: editAddress.phone || '0123456789', // Giữ phone cũ hoặc dùng mặc định
           isDefault: isDefault,
         };
         
@@ -53,7 +55,9 @@ export default function NewAddressScreen() {
         const newAddress = {
           id: `address_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           name: addressNickname,
+          fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
+          phone: '0123456789', // Thêm phone mặc định
           isDefault: isDefault,
         };
         

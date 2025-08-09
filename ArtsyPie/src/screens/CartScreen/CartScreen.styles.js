@@ -109,6 +109,23 @@ export default StyleSheet.create({
     fontWeight: '600',
     marginBottom: 4,
   },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  originalPrice: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#999',
+    textDecorationLine: 'line-through',
+  },
+  discountedPrice: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#e74c3c',
+  },
   productPrice: {
     fontSize: 16,
     fontWeight: '700',

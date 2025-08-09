@@ -96,9 +96,6 @@ const BottomTabNavigator = () => {
       <Tab.Screen 
         name="Cart" 
         component={AuthenticatedCartScreen}
-        options={{
-          tabBarStyle: { display: 'none' }
-        }}
       />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>

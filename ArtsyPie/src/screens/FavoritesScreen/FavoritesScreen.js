@@ -46,15 +46,13 @@ export default function FavoritesScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
               <Ionicons name="heart" size={80} color="#ccc" />
-      <Text style={styles.emptyTitle}>Chưa có sản phẩm yêu thích</Text>
-      <Text style={styles.emptySubtitle}>
-        Khám phá và thêm sản phẩm vào danh sách yêu thích của bạn
-      </Text>
+      <Text style={styles.emptyTitle}>No favorite products yet</Text>
+      <Text style={styles.emptySubtitle}>Explore and add products to your wishlist</Text>
       <TouchableOpacity 
         style={styles.exploreButton}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('MainTabs', { screen: 'Home' })}
       >
-        <Text style={styles.exploreButtonText}>Khám phá ngay</Text>
+        <Text style={styles.exploreButtonText}>Explore now</Text>
       </TouchableOpacity>
     </View>
   );
@@ -115,7 +113,7 @@ export default function FavoritesScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Sản phẩm yêu thích</Text>
-        <Text style={styles.favoriteCount}>{favorites.length} sản phẩm</Text>
+        <Text style={styles.favoriteCount}>{favorites.length} product(s)</Text>
       </View>
 
       {!favorites || favorites.length === 0 ? (

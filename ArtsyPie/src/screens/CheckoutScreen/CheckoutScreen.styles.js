@@ -96,6 +96,61 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  cartItemsPreview: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  cartItemsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  cartItemPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  cartItemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  cartItemInfo: {
+    flex: 1,
+  },
+  cartItemName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 2,
+  },
+  cartItemArtist: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
+  },
+  cartItemQuantity: {
+    fontSize: 12,
+    color: '#999',
+  },
+  cartItemPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF6B6B',
+  },
+  moreItemsText: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
   viewAllButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -271,6 +326,17 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#333',
+  },
+  originalPrice: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#999',
+    textDecorationLine: 'line-through',
+  },
+  discountedPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF6B6B',
   },
   totalRow: {
     borderTopWidth: 1,

@@ -16,6 +16,8 @@ import { COLORS } from '../../theme/colors';
 
 export default function PaymentMethodScreen() {
   const navigation = useNavigation();
+
+  // Mock payment methods data - in real app this would come from Redux state
   const [paymentMethods, setPaymentMethods] = useState([
     {
       id: '1',
@@ -50,6 +52,7 @@ export default function PaymentMethodScreen() {
   const [paymentToDelete, setPaymentToDelete] = useState(null);
   const [newPaymentType, setNewPaymentType] = useState('card');
 
+  // Form data for adding new payment method
   const [formData, setFormData] = useState({
     cardNumber: '',
     cardholderName: '',

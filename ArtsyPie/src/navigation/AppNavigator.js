@@ -25,6 +25,7 @@ import PaymentMethodScreen from '../screens/PaymentMethodScreen/PaymentMethodScr
 import SearchHistoryScreen from '../screens/SearchHistoryScreen/SearchHistoryScreen';
 import WishlistScreen from '../screens/WishlistScreen/WishlistScreen';
 import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
+import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen/ResetPasswordScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -56,6 +57,7 @@ export default function AppNavigator() {
       <Stack.Screen name="SearchHistory" component={SearchHistoryScreen} />
       <Stack.Screen name="Wishlist" component={WishlistScreen} />
       <Stack.Screen name="Favorites" component={FavoritesScreen} />
+      <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
 
     </Stack.Navigator>
   );

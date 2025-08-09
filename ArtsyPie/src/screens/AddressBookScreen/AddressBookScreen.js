@@ -109,11 +109,6 @@ export default function AddressBookScreen() {
         <View style={styles.addressInfo}>
           <View style={styles.addressNameRow}>
             <Text style={styles.addressName}>{address.name}</Text>
-            {address.isDefault && (
-              <View style={styles.defaultBadge}>
-                <Text style={styles.defaultBadgeText}>Default</Text>
-              </View>
-            )}
           </View>
           <Text style={styles.fullName}>{address.fullName}</Text>
           <Text style={styles.phone}>{address.phone}</Text>
