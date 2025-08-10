@@ -25,7 +25,7 @@ export default StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
-    paddingTop: 50,
+    paddingTop:50,
   },
   backButton: {
     width: 40,
@@ -61,8 +61,14 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
   },
+  scrollContent: {
+    paddingBottom: 150, // Add bottom padding to prevent bottom tab overlap
+  },
   cartItems: {
     paddingBottom: 20,
+  },
+  bottomPadding: {
+    height: 50, // Additional bottom spacing
   },
 
   // Cart item styles
@@ -190,6 +196,8 @@ export default StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingVertical: 20,
+    paddingBottom: 30,
+    marginBottom: 80,
     borderTopWidth: 1,
     borderTopColor: '#e9ecef',
     shadowColor: '#000',
@@ -234,8 +242,10 @@ export default StyleSheet.create({
   },
   checkoutButtonText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textTransform: 'capitalize',
   },
   continueShoppingButton: {
     padding: 16,

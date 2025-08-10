@@ -170,7 +170,7 @@ export default function SearchScreen() {
         ListHeaderComponent={
           <View style={styles.resultsHeader}>
             <Text style={styles.resultsTitle}>
-              {dataToShow.length} sản phẩm
+              {dataToShow.length} product(s)
             </Text>
             <TouchableOpacity 
               style={styles.filterButton}

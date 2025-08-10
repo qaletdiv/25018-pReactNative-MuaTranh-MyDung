@@ -21,7 +21,6 @@ export const fetchCartAsync = createAsyncThunk(
       const apiPromise = cartApi.getCart();
       const response = await Promise.race([apiPromise, timeoutPromise]);
       
-             // Xử lý response theo API documentation: { success: true, data: { items: [], total: 0, itemCount: 0 } }
        const cartData = response.data;
        let items = [];
        
@@ -56,12 +55,18 @@ export const addToCartAsync = createAsyncThunk(
   'cart/addToCart',
   async (productData, { rejectWithValue }) => {
     try {
-      console.log('🚀 addToCartAsync - Sending productData:', JSON.stringify(productData, null, 2));
+      //console.log(' addToCartAsync - Sending productData:', JSON.stringify(productData, null, 2));
       
-      const response = await cartApi.addToCart(productData);
-      console.log('📡 addToCartAsync - API Response:', JSON.stringify(response.data, null, 2));
+      // Thêm timeout 5 giây
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 5000);
+      });
       
-      // API trả về { success: true, message: "...", data: { items: [...], total: ..., itemCount: ... } }
+      const apiPromise = cartApi.addToCart(productData);
+      const response = await Promise.race([apiPromise, timeoutPromise]);
+      
+      //console.log('addToCartAsync - API Response:', JSON.stringify(response.data, null, 2));
+      
       if (response.data.success && response.data.data) {
         console.log('✅ addToCartAsync - Success, cartData:', JSON.stringify(response.data.data, null, 2));
         return {
@@ -70,13 +75,16 @@ export const addToCartAsync = createAsyncThunk(
         };
       }
       
-      console.log('⚠️ addToCartAsync - No success or data');
+      //console.log('addToCartAsync - No success or data');
       return {
         success: true,
         cartData: { items: [], total: 0, itemCount: 0 }
       };
     } catch (error) {
-      console.log('❌ addToCartAsync - Error:', error);
+      //console.log('addToCartAsync - Error:', error);
+      if (error.message === 'Timeout') {
+        return rejectWithValue('Không thể kết nối đến server');
+      }
       return rejectWithValue(error.response?.data?.message || 'Lỗi khi thêm vào giỏ hàng');
     }
   }
@@ -86,9 +94,14 @@ export const updateCartItemAsync = createAsyncThunk(
   'cart/updateCartItem',
   async ({ productId, quantity, selectedOptions }, { rejectWithValue }) => {
     try {
-      const response = await cartApi.updateCartItem(productId, quantity, selectedOptions);
+      // Thêm timeout 5 giây
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 5000);
+      });
       
-      // API trả về { success: true, message: "...", data: { items: [...], total: ..., itemCount: ... } }
+      const apiPromise = cartApi.updateCartItem(productId, quantity, selectedOptions);
+      const response = await Promise.race([apiPromise, timeoutPromise]);
+      
       if (response.data.success && response.data.data) {
         return {
           success: true,
@@ -101,6 +114,9 @@ export const updateCartItemAsync = createAsyncThunk(
         cartData: { items: [], total: 0, itemCount: 0 }
       };
     } catch (error) {
+      if (error.message === 'Timeout') {
+        return rejectWithValue('Không thể kết nối đến server');
+      }
       return rejectWithValue(error.response?.data?.message || 'Lỗi khi cập nhật giỏ hàng');
     }
   }
@@ -110,8 +126,13 @@ export const removeFromCartAsync = createAsyncThunk(
   'cart/removeFromCart',
   async (productId, { rejectWithValue }) => {
     try {
-      const response = await cartApi.removeFromCart(productId);
+      // Thêm timeout 5 giây
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 5000);
+      });
       
+      const apiPromise = cartApi.removeFromCart(productId);
+      const response = await Promise.race([apiPromise, timeoutPromise]);
       
       if (response.data.success && response.data.data) {
         return {
@@ -125,6 +146,9 @@ export const removeFromCartAsync = createAsyncThunk(
         cartData: { items: [], total: 0, itemCount: 0 }
       };
     } catch (error) {
+      if (error.message === 'Timeout') {
+        return rejectWithValue('Không thể kết nối đến server');
+      }
       return rejectWithValue(error.response?.data?.message || 'Lỗi khi xóa khỏi giỏ hàng');
     }
   }
@@ -163,7 +187,6 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    // Local actions for immediate UI updates (fallback)
     addToCart: (state, action) => {
       const { productId, quantity = 1, product, selectedOptions } = action.payload;
       const existingItem = state.cartItems.find(item => item.productId === productId);

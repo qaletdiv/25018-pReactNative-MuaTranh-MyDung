@@ -12,7 +12,7 @@ export const login = createAsyncThunk(
       const response = await axiosClient.post('/auth/login', payload);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Đăng nhập thất bại');
+      return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
@@ -25,7 +25,7 @@ export const register = createAsyncThunk(
       const response = await axiosClient.post('/auth/register', payload);
       
 
-      const data = response.data ?? { message: 'Đăng ký thành công' };
+      const data = response.data ?? { message: 'Registered successfully'};
 
       return data;
     } catch (error) {
@@ -35,7 +35,7 @@ export const register = createAsyncThunk(
         error.response?.data?.message ||
         error.response?.data?.errors?.[0]?.description ||
         JSON.stringify(error.response?.data) ||
-        'Đăng ký thất bại'
+        'Register failed'
       );
     }
   }
@@ -49,7 +49,7 @@ export const forgotPassword = createAsyncThunk(
       const response = await axiosClient.post('/auth/forgot-password', { email });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Có lỗi xảy ra');
+      return rejectWithValue(error.response?.data?.message || 'An error occurred');
     }
   }
 );
@@ -62,7 +62,20 @@ export const resetPassword = createAsyncThunk(
       const response = await axiosClient.post('/auth/reset-password', payload);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Không thể đặt lại mật khẩu');
+      return rejectWithValue(error.response?.data?.message || 'Cannot reset password');
+    }
+  }
+);
+
+// Update User Profile
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put('/auth/profile', payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Cannot update profile');
     }
   }
 );
@@ -120,7 +133,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = 'Email hoặc mật khẩu không chính xác';
+        state.error = 'Email or password is incorrect';
       });
 
     // 🔹 REGISTER
@@ -132,7 +145,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload?.message || 'Đăng ký thành công';
+        state.success = action.payload?.message || 'Login successfully';
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
@@ -148,7 +161,7 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload?.message || 'Yêu cầu đã được gửi';
+        state.success = action.payload?.message || 'Request sent';
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.loading = false;
@@ -164,9 +177,29 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload?.message || 'Mật khẩu đã được thay đổi thành công';
+        state.success = action.payload?.message || 'Password changed successfully';
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+      
+    // UPDATE PROFILE
+    builder
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload?.message || 'Update profile successfully';
+        // Update user data in state
+        if (action.payload?.user) {
+          state.user = { ...state.user, ...action.payload.user };
+        }
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

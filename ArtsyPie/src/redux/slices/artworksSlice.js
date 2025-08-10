@@ -48,7 +48,7 @@ export const searchArtworks = createAsyncThunk(
       const response = await axiosClient.get(`/artworks/search?q=${searchTerm}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Không thể tìm kiếm sản phẩm');
+      return rejectWithValue(error.response?.data?.message || 'Cannot find product');
     }
   }
 );

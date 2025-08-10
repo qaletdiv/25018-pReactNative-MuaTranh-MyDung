@@ -385,7 +385,6 @@ export default StyleSheet.create({
   // Artist Popup Styles
   popupOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -548,5 +547,55 @@ export default StyleSheet.create({
     color: '#AA7F60',
     fontSize: 16,
     fontWeight: '600',
+  },
+  thumbnailContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+    backgroundColor: '#fff',
+  },
+  thumbnailScrollContent: {
+    paddingHorizontal: 4,
+  },
+  thumbnailItem: {
+    width: 70,
+    height: 70,
+    borderRadius: 8,
+    marginHorizontal: 6,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  activeThumbnail: {
+    borderColor: COLORS.primary,
+    shadowColor: COLORS.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  thumbnailLabel: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+  },
+  thumbnailLabelText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 }); 

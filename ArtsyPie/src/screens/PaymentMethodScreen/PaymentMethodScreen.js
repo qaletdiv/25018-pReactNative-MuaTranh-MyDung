@@ -17,7 +17,6 @@ import { COLORS } from '../../theme/colors';
 export default function PaymentMethodScreen() {
   const navigation = useNavigation();
 
-  // Mock payment methods data - in real app this would come from Redux state
   const [paymentMethods, setPaymentMethods] = useState([
     {
       id: '1',
@@ -194,11 +193,6 @@ export default function PaymentMethodScreen() {
         <View style={styles.paymentInfo}>
           <View style={styles.paymentNameRow}>
             <Text style={styles.paymentName}>{payment.name}</Text>
-            {payment.isDefault && (
-              <View style={styles.defaultBadge}>
-                <Text style={styles.defaultBadgeText}>Default</Text>
-              </View>
-            )}
           </View>
           
           {payment.type === 'card' ? (
@@ -221,7 +215,7 @@ export default function PaymentMethodScreen() {
           >
             <Ionicons 
               name={payment.isDefault ? "checkmark-circle" : "checkmark-circle-outline"} 
-              size={20} 
+              size={24} 
               color={payment.isDefault ? COLORS.primary : "#666"} 
             />
           </TouchableOpacity>

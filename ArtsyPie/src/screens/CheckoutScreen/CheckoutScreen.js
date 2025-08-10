@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TextInput,
   Alert,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -63,7 +64,6 @@ export default function CheckoutScreen() {
     }
   }, [route.params?.selectedDeliveryTime?.id, selectedDeliveryTime]);
 
-  // Sử dụng địa chỉ từ Redux store, fallback về mock data nếu chưa có
   const availableAddresses = userAddresses.length > 0 ? userAddresses : [
     { id: 'home', name: 'Home', address: '123 Main St, Anytown, USA 12345', isDefault: true },
     { id: 'office', name: 'Office', address: '456 Business Ave, Worktown, USA 67890', isDefault: false },
@@ -71,7 +71,6 @@ export default function CheckoutScreen() {
     { id: 'parents', name: "Parent's House", address: '4821 Ridge Top Cir, Anchorage, Alaska 99504', isDefault: false, },
   ];
 
-  // Set địa chỉ mặc định là Home khi component mount
   useEffect(() => {
     if (!selectedAddress || selectedAddress === '') {
       const defaultAddress = availableAddresses.find(addr => addr.isDefault) || availableAddresses[0];
@@ -154,7 +153,6 @@ export default function CheckoutScreen() {
     }
     
     return currentCartItems.reduce((total, item) => {
-      // Sử dụng product data từ cart item (đã có từ API)
       const itemTotal = (item.product?.price || 0) * item.quantity;
       return total + itemTotal;
     }, 0);
@@ -185,12 +183,10 @@ export default function CheckoutScreen() {
 
   const handlePlaceOrder = async () => {
     try {
-      // Lấy địa chỉ hiện tại từ route params hoặc từ addresses array
       const currentAddress = route.params?.selectedAddress || availableAddresses.find(a => a.id === selectedAddress);
       const selectedDelivery = deliveryOptions.find(d => d.id === selectedDeliveryTime);
       const selectedPaymentMethod = paymentMethods.find(p => p.id === selectedPayment);
       
-      // Tạo order data cho API theo format mà backend mong đợi
       const orderData = {
         items: currentCartItems.map(item => ({
           productId: item.productId || item.id,
@@ -226,12 +222,12 @@ export default function CheckoutScreen() {
         totalAmount: calculateTotal()
       };
 
-      // Debug: Log dữ liệu được gửi đi
-      console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
+      //Log dữ liệu được gửi đi
+      //console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
 
       // Validation: Kiểm tra dữ liệu trước khi gửi
       if (!orderData.items || orderData.items.length === 0) {
-        console.error('No items in order');
+        //console.error('No items in order');
         return;
       }
 
@@ -240,10 +236,8 @@ export default function CheckoutScreen() {
         return;
       }
 
-      // Gọi API tạo order
       const result = await dispatch(createOrder(orderData)).unwrap();
       
-             // Navigate đến OrderConfirmation với data từ API
        navigation.navigate('OrderConfirmation', {
          orderId: result.id || `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
          total: result.total || calculateTotal(),
@@ -260,11 +254,9 @@ export default function CheckoutScreen() {
          selectedShippingMethod: selectedDelivery,
        });
       
-      // Clear cart sau khi tạo order thành công
       await dispatch(clearCartAsync()).unwrap();
     } catch (error) {
       console.error('Error creating order:', error);
-      // Hiển thị thông báo lỗi cho user
       Alert.alert(
         'Lỗi tạo đơn hàng',
         error.message || 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại.',
@@ -277,10 +269,10 @@ export default function CheckoutScreen() {
     // Tìm địa chỉ hiện tại từ route params hoặc từ addresses array
     const currentAddress = route.params?.selectedAddress || availableAddresses.find(a => a.id === selectedAddress);
     
-    // Debug log để kiểm tra
-    console.log('CheckoutScreen - selectedAddress:', selectedAddress);
-    console.log('CheckoutScreen - currentAddress:', currentAddress);
-    console.log('CheckoutScreen - availableAddresses:', availableAddresses);
+    //  log để kiểm tra
+    // console.log('CheckoutScreen - selectedAddress:', selectedAddress);
+    // console.log('CheckoutScreen - currentAddress:', currentAddress);
+    // console.log('CheckoutScreen - availableAddresses:', availableAddresses);
     
     return (
       <View style={styles.section}>

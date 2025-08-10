@@ -51,18 +51,29 @@ export default function ProductDetailScreen() {
   // Auto slider timer
   const sliderRef = useRef(null);
 
-  // Sử dụng mảng images từ dữ liệu sản phẩm, nếu không có thì fallback về image đơn
+  // Sử dụng mảng images từ dữ liệu sản phẩm, nếu không có thì tạo multiple angles
   let images = [];
   
   if (item?.images && Array.isArray(item.images)) {
     images = item.images;
   } else if (item?.image) {
-    // Nếu có image đơn, tạo mảng với 1 item
-    images = [{ uri: item.image }];
+    // Nếu có image đơn, tạo mảng với multiple angles (mock data)
+    const baseImage = item.image;
+    images = [
+      baseImage, // Main image
+      `${baseImage}?angle=left`, // Left angle
+      `${baseImage}?angle=right`, // Right angle
+      `${baseImage}?detail=frame`, // Frame detail
+    ];
   }
 
-  // Đảm bảo images luôn có ít nhất 1 item và format đúng
-  const safeImages = images.length > 0 ? images : [{ uri: 'https://picsum.photos/400/600?random=1' }];
+  // Đảm bảo images luôn có ít nhất 3-4 angles và format đúng
+  const safeImages = images.length > 0 ? images : [
+    'https://picsum.photos/400/600?random=1',
+    'https://picsum.photos/400/600?random=2', 
+    'https://picsum.photos/400/600?random=3',
+    'https://picsum.photos/400/600?random=4'
+  ];
 
   // Debug log để kiểm tra dữ liệu
 
@@ -170,7 +181,10 @@ export default function ProductDetailScreen() {
   };
 
   const handleArtistPress = () => {
-    setShowArtistPopup(true);
+    // Navigate to Artist Profile screen
+    navigation.navigate('ArtistProfile', { 
+      artistName: item?.artist || 'Unknown Artist' 
+    });
   };
 
   const handleArtistWorkPress = (artwork) => {
@@ -247,6 +261,70 @@ export default function ProductDetailScreen() {
           ))}
         </View>
       )}
+
+      {safeImages.length > 1 && (
+        <View style={styles.thumbnailContainer}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.thumbnailScrollContent}
+          >
+            {safeImages.map((imageItem, index) => {
+              let imageSource;
+              if (typeof imageItem === 'string') {
+                imageSource = { uri: imageItem };
+              } else if (imageItem && typeof imageItem === 'object' && imageItem.uri) {
+                imageSource = imageItem;
+              } else {
+                imageSource = { uri: 'https://picsum.photos/100/100?random=' + (index + 1) };
+              }
+              
+              return (
+                <TouchableOpacity
+                  key={`thumb-${index}`}
+                  style={[
+                    styles.thumbnailItem,
+                    index === (isNaN(currentImageIndex) ? 0 : currentImageIndex) && styles.activeThumbnail
+                  ]}
+                  onPress={() => {
+                    setCurrentImageIndex(index);
+                    sliderRef.current?.scrollToIndex({
+                      index: index,
+                      animated: true
+                    });
+                  }}
+                >
+                  <Image
+                    source={imageSource}
+                    style={styles.thumbnailImage}
+                    resizeMode="cover"
+                  />
+                  {index === 0 && (
+                    <View style={styles.thumbnailLabel}>
+                      <Text style={styles.thumbnailLabelText}>Main</Text>
+                    </View>
+                  )}
+                  {index === 1 && (
+                    <View style={styles.thumbnailLabel}>
+                      <Text style={styles.thumbnailLabelText}>Left</Text>
+                    </View>
+                  )}
+                  {index === 2 && (
+                    <View style={styles.thumbnailLabel}>
+                      <Text style={styles.thumbnailLabelText}>Right</Text>
+                    </View>
+                  )}
+                  {index === 3 && (
+                    <View style={styles.thumbnailLabel}>
+                      <Text style={styles.thumbnailLabelText}>Detail</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 
@@ -278,27 +356,100 @@ export default function ProductDetailScreen() {
     </View>
   );
 
-  const renderSpecifications = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Specifications</Text>
-      <View style={styles.specItem}>
-        <Text style={styles.specLabel}>Size:</Text>
-        <Text style={styles.specValue}>80cm x 120cm</Text>
+  const renderSpecifications = () => {
+    const artworkId = item?.id || 1;
+    const randomSeed = artworkId % 10;
+    
+    const widths = [60, 80, 100, 120, 150];
+    const heights = [80, 100, 120, 140, 180];
+    const depths = [2, 3, 4, 5];
+    const years = [2020, 2021, 2022, 2023, 2024];
+    
+    const width_cm = widths[randomSeed % widths.length];
+    const height_cm = heights[randomSeed % heights.length];
+    const depth_cm = depths[randomSeed % depths.length];
+    const yearCreated = years[randomSeed % years.length];
+    
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Technical Specifications</Text>
+        
+        {/* Dimensions */}
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Dimensions (H × W × D):</Text>
+          <Text style={styles.specValue}>{height_cm} × {width_cm} × {depth_cm} cm</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Size (Inches):</Text>
+          <Text style={styles.specValue}>
+            {Math.round(height_cm / 2.54)}" × {Math.round(width_cm / 2.54)}" × {Math.round(depth_cm / 2.54)}"
+          </Text>
+        </View>
+        
+        {/* Material & Medium */}
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Medium:</Text>
+          <Text style={styles.specValue}>{item?.type || 'Oil on Canvas'}</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Support:</Text>
+          <Text style={styles.specValue}>Stretched Canvas</Text>
+        </View>
+        
+        {/* Artistic Details */}
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Style:</Text>
+          <Text style={styles.specValue}>{item?.style || 'Contemporary'}</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Year Created:</Text>
+          <Text style={styles.specValue}>{yearCreated}</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Orientation:</Text>
+          <Text style={styles.specValue}>
+            {width_cm > height_cm ? 'Landscape' : width_cm < height_cm ? 'Portrait' : 'Square'}
+          </Text>
+        </View>
+        
+        {/* Condition & Authenticity */}
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Condition:</Text>
+          <Text style={styles.specValue}>Excellent</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Signature:</Text>
+          <Text style={styles.specValue}>Signed by Artist</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Certificate:</Text>
+          <Text style={styles.specValue}>Certificate of Authenticity Included</Text>
+        </View>
+        
+        {/* Shipping Info */}
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Ready to Hang:</Text>
+          <Text style={styles.specValue}>Yes (Wire hanging system included)</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Framing:</Text>
+          <Text style={styles.specValue}>Unframed (Frame options available)</Text>
+        </View>
+        
+        <View style={styles.specItem}>
+          <Text style={styles.specLabel}>Weight (approx):</Text>
+          <Text style={styles.specValue}>{Math.round((width_cm * height_cm * depth_cm) / 1000 + 1)} kg</Text>
+        </View>
       </View>
-      <View style={styles.specItem}>
-        <Text style={styles.specLabel}>Material:</Text>
-        <Text style={styles.specValue}>{item?.type || 'Oil Painting'}</Text>
-      </View>
-      <View style={styles.specItem}>
-        <Text style={styles.specLabel}>Style:</Text>
-        <Text style={styles.specValue}>{item?.style || 'Modern'}</Text>
-      </View>
-      <View style={styles.specItem}>
-        <Text style={styles.specLabel}>Year Created:</Text>
-        <Text style={styles.specValue}>2024</Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   const renderActionButtons = () => (
     <View style={styles.actionButtons}>
@@ -608,7 +759,7 @@ export default function ProductDetailScreen() {
               style={styles.viewCartButton}
               onPress={() => {
                 setShowSuccessModal(false);
-                navigation.navigate('Cart');
+                navigation.navigate('MainTabs', { screen: 'Cart' });
               }}
             >
               <Text style={styles.viewCartButtonText}>View Cart</Text>

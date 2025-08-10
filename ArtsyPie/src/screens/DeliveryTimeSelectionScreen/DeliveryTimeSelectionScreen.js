@@ -68,10 +68,9 @@ export default function DeliveryTimeSelectionScreen() {
     // Lấy delivery option đã chọn
     const selectedDeliveryData = deliveryOptions.find(option => option.id === selectedDeliveryTime);
     
-    // Truyền cả delivery time và current address để giữ nguyên địa chỉ đã chọn
     navigation.navigate('Checkout', { 
       selectedDeliveryTime: selectedDeliveryData,
-      selectedAddress: currentAddress // Giữ nguyên địa chỉ hiện tại
+      selectedAddress: currentAddress 
     });
   };
 

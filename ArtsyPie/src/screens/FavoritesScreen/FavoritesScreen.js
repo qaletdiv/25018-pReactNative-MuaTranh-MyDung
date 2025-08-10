@@ -78,11 +78,11 @@ export default function FavoritesScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Sản phẩm yêu thích</Text>
+          <Text style={styles.headerTitle}>Favorite products</Text>
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#AA7F60" />
-          <Text style={styles.loadingText}>Đang tải...</Text>
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </SafeAreaView>
     );
@@ -92,17 +92,17 @@ export default function FavoritesScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Sản phẩm yêu thích</Text>
+          <Text style={styles.headerTitle}>Favorite products</Text>
         </View>
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={80} color="#ff6b6b" />
-          <Text style={styles.errorTitle}>Có lỗi xảy ra</Text>
+          <Text style={styles.errorTitle}>An error occurred</Text>
           <Text style={styles.errorText}>{error}</Text>
           <TouchableOpacity 
             style={styles.retryButton}
             onPress={() => dispatch(fetchFavoritesAsync())}
           >
-            <Text style={styles.retryButtonText}>Thử lại</Text>
+            <Text style={styles.retryButtonText}>Try again</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -112,7 +112,7 @@ export default function FavoritesScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Sản phẩm yêu thích</Text>
+        <Text style={styles.headerTitle}>Favorite products</Text>
         <Text style={styles.favoriteCount}>{favorites.length} product(s)</Text>
       </View>
 

@@ -64,10 +64,16 @@ const AccountScreen = ({ navigation }) => {
       onPress: () => navigation.navigate('AddressBook'),
     },
     {
-      id: 'profile',
-      title: 'Profile',
+      id: 'editProfile',
+      title: 'Edit Profile',
       icon: 'person',
-      onPress: () => navigation.navigate('UserProfile'),
+      onPress: () => navigation.navigate('EditProfile'),
+    },
+    {
+      id: 'changePassword',
+      title: 'Change Password',
+      icon: 'lock-closed',
+      onPress: () => navigation.navigate('ChangePassword'),
     },
     {
       id: 'payment',

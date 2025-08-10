@@ -130,9 +130,9 @@ export default function ProductListScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Ionicons name="search-outline" size={80} color="#ccc" />
-      <Text style={styles.emptyStateTitle}>Không tìm thấy sản phẩm</Text>
+      <Text style={styles.emptyStateTitle}>No products found</Text>
       <Text style={styles.emptyStateText}>
-        Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc
+        Try searching with a different keyword or adjust the filters
       </Text>
     </View>
   );
@@ -153,7 +153,7 @@ export default function ProductListScreen() {
       {/* Product Count */}
       <View style={styles.productCount}>
         <Text style={styles.productCountText}>
-          {filteredProducts.length} sản phẩm
+          {filteredProducts.length} product(s)
         </Text>
       </View>
 

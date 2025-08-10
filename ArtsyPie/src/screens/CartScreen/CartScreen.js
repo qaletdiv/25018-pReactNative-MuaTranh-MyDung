@@ -216,10 +216,16 @@ const CartScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         <View style={styles.cartItems}>
           {cartItems.map((item, index) => renderCartItem(item, index))}
         </View>
+        {/* Add bottom padding to prevent bottom tab overlap */}
+        <View style={styles.bottomPadding} />
       </ScrollView>
 
       <View style={styles.footer}>
@@ -231,7 +237,7 @@ const CartScreen = () => {
           style={styles.checkoutButton}
           onPress={() => navigation.navigate('Checkout')}
         >
-          <Text style={styles.checkoutButtonText}>Go To Checkout</Text>
+          <Text style={styles.checkoutButtonText}>Go to Checkout</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.continueShoppingButton}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ScrollView } from 'react-native';
 import styles from './LoginScreen.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearMessage } from '../../redux/slices/authSlice';
@@ -93,95 +93,101 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login to your account</Text>
-      <Text style={styles.subtitle}>It’s great to see you again.</Text>
-
-      {/* Email */}
-      <Text style={styles.label}>Email</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={[styles.input]}
-          placeholder="Enter your email address"
-          placeholderTextColor="#999"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-        />
-        {email.length > 0 && (
-          isEmailValid ? (
-            <Ionicons name="checkmark-circle" size={20} color="green" />
-          ) : (
-            <Ionicons name="alert-circle" size={20} color="red" />
-          )
-        )}
-      </View>
-      {!isEmailValid && email.length > 0 && (
-        <Text style={styles.errorText}>Please enter valid email address</Text>
-      )}
-
-      {/* Password */}
-      <Text style={styles.label}>Password</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          placeholderTextColor="#999"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={20} color="#999" />
-        </TouchableOpacity>
-      </View>
-      {!isPasswordValid && password.length > 0 && (
-        <Text style={styles.errorText}>Password must be at least 8 characters with upper, lower, number and symbol</Text>
-      )}
-
-      {/* Forgot Password */}
-      <Text style={styles.forgotText}>
-        Forgot your password?{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('ResetPasswordScreen')}>
-            Reset your password
-        </Text>
-      </Text>
-
-      {/* Login button */}
-      <TouchableOpacity
-        style={[styles.button, !isFormValid && styles.buttonDisabled]}
-        onPress={handleLogin}
-        disabled={!isFormValid || loading}
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Login'}</Text>
-      </TouchableOpacity>
+        <Text style={styles.title}>Login to your account</Text>
+        <Text style={styles.subtitle}>It's great to see you again.</Text>
 
-      {/* Or separator */}
-      <View style={styles.orContainer}>
-        <View style={styles.orLine} />
-        <Text style={styles.orText}>Or</Text>
-        <View style={styles.orLine} />
-      </View>
+        {/* Email */}
+        <Text style={styles.label}>Email</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={[styles.input]}
+            placeholder="Enter your email address"
+            placeholderTextColor="#999"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
+          {email.length > 0 && (
+            isEmailValid ? (
+              <Ionicons name="checkmark-circle" size={20} color="green" />
+            ) : (
+              <Ionicons name="alert-circle" size={20} color="red" />
+            )
+          )}
+        </View>
+        {!isEmailValid && email.length > 0 && (
+          <Text style={styles.errorText}>Please enter valid email address</Text>
+        )}
 
-      {/* Social Buttons */}
-      <TouchableOpacity style={styles.socialButtonWhite} onPress={handleGoogleLogin}>
-        <Image source={require('../../../assets/Images/google.png')} style={styles.socialIcon} />
-        <Text style={styles.socialTextBlack}>Login with Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.socialButtonBlue} onPress={handleFacebookLogin}>
-        <Image source={require('../../../assets/Images/facebook.png')} style={styles.socialIcon} />
-        <Text style={styles.socialTextWhite}>Login with Facebook</Text>
-      </TouchableOpacity>
+        {/* Password */}
+        <Text style={styles.label}>Password</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            placeholderTextColor="#999"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={20} color="#999" />
+          </TouchableOpacity>
+        </View>
+        {!isPasswordValid && password.length > 0 && (
+          <Text style={styles.errorText}>Password must be at least 8 characters with upper, lower, number and symbol</Text>
+        )}
 
-      {/* Bottom text */}
-      <View style={{ marginBottom: 0, alignItems: 'center' }}>
-        <Text style={styles.bottomText}>
-          Already have an account?{' '}
-          <Text style={styles.link} onPress={() => navigation.replace('RegisterScreen')}>
-            Join
+        {/* Forgot Password */}
+        <Text style={styles.forgotText}>
+          Forgot your password?{' '}
+          <Text style={styles.link} onPress={() => navigation.navigate('ResetPasswordScreen')}>
+              Reset your password
           </Text>
         </Text>
-      </View>
+
+        {/* Login button */}
+        <TouchableOpacity
+          style={[styles.button, !isFormValid && styles.buttonDisabled]}
+          onPress={handleLogin}
+          disabled={!isFormValid || loading}
+        >
+          <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Login'}</Text>
+        </TouchableOpacity>
+
+        {/* Or separator */}
+        <View style={styles.orContainer}>
+          <View style={styles.orLine} />
+          <Text style={styles.orText}>Or</Text>
+          <View style={styles.orLine} />
+        </View>
+
+        {/* Social Buttons */}
+        <TouchableOpacity style={styles.socialButtonWhite} onPress={handleGoogleLogin}>
+          <Image source={require('../../../assets/Images/google.png')} style={styles.socialIcon} />
+          <Text style={styles.socialTextBlack}>Login with Google</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.socialButtonBlue} onPress={handleFacebookLogin}>
+          <Image source={require('../../../assets/Images/facebook.png')} style={styles.socialIcon} />
+          <Text style={styles.socialTextWhite}>Login with Facebook</Text>
+        </TouchableOpacity>
+
+        {/* Bottom text */}
+        <View style={{ marginBottom: 20, alignItems: 'center' }}>
+          <Text style={styles.bottomText}>
+            Already have an account?{' '}
+            <Text style={styles.link} onPress={() => navigation.replace('RegisterScreen')}>
+              Join
+            </Text>
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }

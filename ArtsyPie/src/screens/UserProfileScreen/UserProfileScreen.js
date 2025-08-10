@@ -25,7 +25,7 @@ export default function UserProfileScreen() {
   
   // Form data
   const [formData, setFormData] = useState({
-    fullName: user?.name || '',
+    fullName: user?.fullName || user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
     dateOfBirth: user?.dateOfBirth || '',
@@ -38,7 +38,7 @@ export default function UserProfileScreen() {
   useEffect(() => {
     if (user) {
       setFormData({
-        fullName: user.name || '',
+        fullName: user.fullName || user.name || '',
         email: user.email || '',
         phone: user.phone || '',
         dateOfBirth: user.dateOfBirth || '',
@@ -100,7 +100,7 @@ export default function UserProfileScreen() {
   const handleCancel = () => {
     // Reset form data to original values
     setFormData({
-      fullName: user?.name || '',
+      fullName: user?.fullName || user?.name || '',
       email: user?.email || '',
       phone: user?.phone || '',
       dateOfBirth: user?.dateOfBirth || '',
@@ -224,53 +224,53 @@ export default function UserProfileScreen() {
     </View>
   );
 
-  const renderMenuItems = () => (
-    <View style={styles.menuSection}>
-      <TouchableOpacity
-        style={styles.menuItem}
-        onPress={handleChangePassword}
-      >
-        <View style={styles.menuItemLeft}>
-          <Ionicons name="lock-closed-outline" size={20} color="#666" />
-          <Text style={styles.menuItemText}>Change Password</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#ccc" />
-      </TouchableOpacity>
+  // const renderMenuItems = () => (
+  //   <View style={styles.menuSection}>
+  //     <TouchableOpacity
+  //       style={styles.menuItem}
+  //       onPress={handleChangePassword}
+  //     >
+  //       <View style={styles.menuItemLeft}>
+  //         <Ionicons name="lock-closed-outline" size={20} color="#666" />
+  //         <Text style={styles.menuItemText}>Change Password</Text>
+  //       </View>
+  //       <Ionicons name="chevron-forward" size={20} color="#ccc" />
+  //     </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.menuItem}
-        onPress={() => navigation.navigate('Notification')}
-      >
-        <View style={styles.menuItemLeft}>
-          <Ionicons name="notifications-outline" size={20} color="#666" />
-          <Text style={styles.menuItemText}>Notification Settings</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#ccc" />
-      </TouchableOpacity>
+  //     <TouchableOpacity
+  //       style={styles.menuItem}
+  //       onPress={() => navigation.navigate('Notification')}
+  //     >
+  //       <View style={styles.menuItemLeft}>
+  //         <Ionicons name="notifications-outline" size={20} color="#666" />
+  //         <Text style={styles.menuItemText}>Notification Settings</Text>
+  //       </View>
+  //       <Ionicons name="chevron-forward" size={20} color="#ccc" />
+  //     </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.menuItem}
-        onPress={() => navigation.navigate('PrivacyPolicy')}
-      >
-        <View style={styles.menuItemLeft}>
-          <Ionicons name="shield-checkmark-outline" size={20} color="#666" />
-          <Text style={styles.menuItemText}>Privacy Policy</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#ccc" />
-      </TouchableOpacity>
+  //     <TouchableOpacity
+  //       style={styles.menuItem}
+  //       onPress={() => navigation.navigate('PrivacyPolicy')}
+  //     >
+  //       <View style={styles.menuItemLeft}>
+  //         <Ionicons name="shield-checkmark-outline" size={20} color="#666" />
+  //         <Text style={styles.menuItemText}>Privacy Policy</Text>
+  //       </View>
+  //       <Ionicons name="chevron-forward" size={20} color="#ccc" />
+  //     </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.menuItem}
-        onPress={() => navigation.navigate('TermsOfService')}
-      >
-        <View style={styles.menuItemLeft}>
-          <Ionicons name="document-text-outline" size={20} color="#666" />
-          <Text style={styles.menuItemText}>Terms of Service</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#ccc" />
-      </TouchableOpacity>
-    </View>
-  );
+  //     <TouchableOpacity
+  //       style={styles.menuItem}
+  //       onPress={() => navigation.navigate('TermsOfService')}
+  //     >
+  //       <View style={styles.menuItemLeft}>
+  //         <Ionicons name="document-text-outline" size={20} color="#666" />
+  //         <Text style={styles.menuItemText}>Terms of Service</Text>
+  //       </View>
+  //       <Ionicons name="chevron-forward" size={20} color="#ccc" />
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -299,7 +299,6 @@ export default function UserProfileScreen() {
         </View>
 
         {renderActionButtons()}
-        {renderMenuItems()}
       </ScrollView>
     </SafeAreaView>
   );

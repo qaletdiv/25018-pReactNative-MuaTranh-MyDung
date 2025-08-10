@@ -5,11 +5,14 @@ import { FONTS } from '../../theme/fonts';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 60,
-    paddingBottom: 0,
-    backgroundColor: '#fff',
-    justifyContent:'center'
+    paddingBottom: 20,
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
@@ -139,7 +142,7 @@ export default StyleSheet.create({
     color: '#333',
     fontSize: 14,
     fontFamily: FONTS.regular,
-    marginTop: 150,
+    marginTop: 30,
   },
   link: {
     color: COLORS.primary,

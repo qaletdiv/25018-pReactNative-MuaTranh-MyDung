@@ -26,6 +26,8 @@ import SearchHistoryScreen from '../screens/SearchHistoryScreen/SearchHistoryScr
 import WishlistScreen from '../screens/WishlistScreen/WishlistScreen';
 import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
 import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen/ResetPasswordScreen';
+import ArtistProfileScreen from '../screens/ArtistProfileScreen/ArtistProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen/EditProfileScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -58,6 +60,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Wishlist" component={WishlistScreen} />
       <Stack.Screen name="Favorites" component={FavoritesScreen} />
       <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+      <Stack.Screen name="ArtistProfile" component={ArtistProfileScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
 
     </Stack.Navigator>
   );
