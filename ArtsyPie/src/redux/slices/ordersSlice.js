@@ -30,13 +30,24 @@ export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async (orderData, { rejectWithValue }) => {
     try {
-      console.log('Creating order with data:', JSON.stringify(orderData, null, 2));
+      //console.log('Creating order with data:', JSON.stringify(orderData, null, 2));
       const response = await ordersApi.createOrder(orderData);
-      console.log('Order creation response:', response.data);
+      //console.log('Order creation response:', response.data);
       return response.data.data || response.data;
     } catch (error) {
       console.error('Order creation error:', error.response?.data || error.message);
-      return rejectWithValue(error.response?.data?.message || 'Cannot create order');
+      
+      // Trả về error message cụ thể từ API
+      if (error.response?.data?.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      
+      // Trả về error message mặc định nếu không có từ API
+      if (error.message) {
+        return rejectWithValue(error.message);
+      }
+      
+      return rejectWithValue('Không thể tạo đơn hàng. Vui lòng thử lại.');
     }
   }
 );

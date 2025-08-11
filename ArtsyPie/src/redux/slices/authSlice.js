@@ -110,6 +110,11 @@ const authSlice = createSlice({
     clearMessage(state) {
       state.success = null;
       state.error = null;
+    },
+    updateLocalProfile(state, action) {
+      state.user = { ...state.user, ...action.payload };
+      // Lưu user data mới vào AsyncStorage
+      AsyncStorage.setItem('userData', JSON.stringify(state.user));
     }
   },
   extraReducers: (builder) => {
@@ -206,5 +211,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { restoreToken, logout, clearMessage } = authSlice.actions;
+export const { restoreToken, logout, clearMessage, updateLocalProfile } = authSlice.actions;
 export default authSlice.reducer;

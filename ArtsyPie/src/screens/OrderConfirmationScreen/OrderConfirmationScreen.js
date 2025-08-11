@@ -40,19 +40,19 @@ export default function OrderConfirmationScreen() {
   const finalTotal = total > 0 ? total : calculateTotalFallback();
   
   // Debug: Log dữ liệu nhận được
-  console.log('OrderConfirmation - Route params:', {
-    orderId,
-    totalFromParams,
-    total,
-    finalTotal,
-    totalType: typeof total,
-    subtotal,
-    itemsCount: items?.length,
-    selectedAddress,
-    selectedPayment,
-    selectedDeliveryTime,
-    selectedShippingMethod
-  });
+  // console.log('OrderConfirmation - Route params:', {
+  //   orderId,
+  //   totalFromParams,
+  //   total,
+  //   finalTotal,
+  //   totalType: typeof total,
+  //   subtotal,
+  //   itemsCount: items?.length,
+  //   selectedAddress,
+  //   selectedPayment,
+  //   selectedDeliveryTime,
+  //   selectedShippingMethod
+  // });
 
   // Thêm order vào Redux store nếu chưa có
   React.useEffect(() => {
@@ -79,7 +79,7 @@ export default function OrderConfirmationScreen() {
         shippingMethod: selectedShippingMethod,
       };
       
-      console.log('Adding new order to Redux:', newOrder);
+      //console.log('Adding new order to Redux:', newOrder);
       dispatch(addNewOrder(newOrder));
     }
   }, [orderId, finalTotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod]);
@@ -184,13 +184,10 @@ export default function OrderConfirmationScreen() {
           <Ionicons name="location" size={20} color={COLORS.primary} />
           <Text style={styles.detailTitle}>Delivery Address</Text>
         </View>
-        <Text style={styles.detailText}>{selectedAddress?.name || selectedAddress?.fullName || 'Unknown Address'}</Text>
+        <Text style={styles.detailText}>{selectedAddress?.fullName || selectedAddress?.name || 'Unknown'}</Text>
         <Text style={styles.detailSubtext}>{selectedAddress?.address || 'No address provided'}</Text>
         {selectedAddress?.phone && (
           <Text style={styles.detailSubtext}>Phone: {selectedAddress.phone}</Text>
-        )}
-        {selectedAddress?.fullName && selectedAddress?.fullName !== selectedAddress?.name && (
-          <Text style={styles.detailSubtext}>Name: {selectedAddress.fullName}</Text>
         )}
       </View>
 

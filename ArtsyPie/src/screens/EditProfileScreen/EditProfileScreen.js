@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 // import * as ImagePicker from 'expo-image-picker';
 // import DateTimePicker from '@react-native-community/datetimepicker';
-// import { updateUserProfile } from '../../redux/slices/authSlice'; // Will be used when API is ready
+import { updateLocalProfile } from '../../redux/slices/authSlice';
 import styles from './EditProfileScreen.styles';
 
 export default function EditProfileScreen() {
@@ -53,7 +53,11 @@ export default function EditProfileScreen() {
     };
 
     const hasFormChanges = Object.keys(formData).some(
-      key => formData[key] !== originalData[key]
+      key => {
+        const currentValue = formData[key] || '';
+        const originalValue = originalData[key] || '';
+        return currentValue.trim() !== originalValue.trim();
+      }
     );
 
     const hasImageChanges = profileImage !== (user?.avatar || null);
@@ -61,11 +65,29 @@ export default function EditProfileScreen() {
     setHasChanges(hasFormChanges || hasImageChanges);
   }, [formData, profileImage, user]);
 
+  // Update form data when user data changes (e.g., after successful update)
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user.fullName || user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        dateOfBirth: user.dateOfBirth || '',
+        address: user.address || '',
+        bio: user.bio || '',
+      });
+      setProfileImage(user.avatar || null);
+    }
+  }, [user]);
+
   const updateFormData = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    
+    // Mark that there are changes
+    setHasChanges(true);
   };
 
   const handleDateChange = (event, date) => {
@@ -73,6 +95,8 @@ export default function EditProfileScreen() {
     if (date) {
       setSelectedDate(date);
       updateFormData('dateOfBirth', date.toISOString().split('T')[0]);
+      // Mark that there are changes
+      setHasChanges(true);
     }
   };
 
@@ -81,6 +105,8 @@ export default function EditProfileScreen() {
       // Placeholder for camera functionality - will be implemented when expo-image-picker is installed
       Alert.alert('Coming Soon', 'Camera functionality will be available once expo-image-picker is installed');
       setShowImagePickerModal(false);
+      // Mark that there are changes when user attempts to change image
+      setHasChanges(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to take photo');
     }
@@ -91,6 +117,8 @@ export default function EditProfileScreen() {
       // Placeholder for gallery functionality - will be implemented when expo-image-picker is installed
       Alert.alert('Coming Soon', 'Gallery functionality will be available once expo-image-picker is installed');
       setShowImagePickerModal(false);
+      // Mark that there are changes when user attempts to change image
+      setHasChanges(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to select image');
     }
@@ -112,16 +140,35 @@ export default function EditProfileScreen() {
       return;
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Simulate API delay for realistic experience
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Update local state directly (không gọi API)
+      const updatedUser = {
+        ...user,
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        dateOfBirth: formData.dateOfBirth,
+        address: formData.address.trim(),
+        bio: formData.bio.trim(),
+      };
       
-      // For demo purposes, always show success (không ảnh hưởng logic cũ)
-      // In real app, this would call actual API
+      // Update Redux store
+      dispatch(updateLocalProfile(updatedUser));
+      
+      // Show success message
       Alert.alert('Success', 'Profile updated successfully', [
         { text: 'OK', onPress: () => navigation.goBack() }
       ]);
     } catch (error) {
+      console.error('Profile update error:', error);
       Alert.alert('Error', 'Failed to update profile');
     } finally {
       setLoading(false);

@@ -177,7 +177,7 @@ export default function AddressSelectionScreen() {
       ...selectedAddressData,
       name: selectedAddressData?.name || selectedAddressData?.fullName || 'Unknown',
       fullName: selectedAddressData?.fullName || selectedAddressData?.name || 'Unknown',
-      phone: selectedAddressData?.phone || '0123456789',
+      phone: selectedAddressData?.phone || 'no phone',
     };
     
     // Chỉ truyền địa chỉ đã chọn, KHÔNG truyền delivery time để tránh conflict

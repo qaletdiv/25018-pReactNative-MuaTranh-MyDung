@@ -25,12 +25,11 @@ export default function ProductListScreen() {
   const [activeFilters, setActiveFilters] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  // Load data when component mounts
   React.useEffect(() => {
     dispatch(fetchArtworks());
   }, [dispatch]);
 
-  // Update filtered products when artworks change
+  // Update filtered products 
   React.useEffect(() => {
     setFilteredProducts([...artworks]);
   }, [artworks]);
@@ -130,9 +129,9 @@ export default function ProductListScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Ionicons name="search-outline" size={80} color="#ccc" />
-      <Text style={styles.emptyStateTitle}>No products found</Text>
+      <Text style={styles.emptyStateTitle}>Không tìm thấy sản phẩm</Text>
       <Text style={styles.emptyStateText}>
-        Try searching with a different keyword or adjust the filters
+        Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc
       </Text>
     </View>
   );
@@ -153,7 +152,7 @@ export default function ProductListScreen() {
       {/* Product Count */}
       <View style={styles.productCount}>
         <Text style={styles.productCountText}>
-          {filteredProducts.length} product(s)
+          {filteredProducts.length} sản phẩm
         </Text>
       </View>
 

@@ -116,7 +116,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
 
             {/* Kích thước */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Kích thước</Text>
+              <Text style={styles.sectionTitle}>Size</Text>
               <View style={styles.optionsContainer}>
                 {paintingSizes.map((size) => (
                   <TouchableOpacity
@@ -140,7 +140,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, filters =
 
             {/* Hướng tranh */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Hướng tranh</Text>
+              <Text style={styles.sectionTitle}>Type</Text>
               <View style={styles.optionsContainer}>
                 {paintingOrientations.map((orientation) => (
                   <TouchableOpacity
