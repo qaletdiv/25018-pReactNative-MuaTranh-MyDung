@@ -42,7 +42,7 @@ export default function NewAddressScreen() {
           name: addressNickname,
           fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
-          phone: editAddress.phone || '0123456789', // Giữ phone cũ hoặc dùng mặc định
+          phone: editAddress.phone || 'no phone', // Giữ phone cũ hoặc dùng mặc định
           isDefault: isDefault,
         };
         
@@ -57,7 +57,7 @@ export default function NewAddressScreen() {
           name: addressNickname,
           fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
-          phone: '0123456789', // Thêm phone mặc định
+          phone: 'no phone', // Thêm phone mặc định
           isDefault: isDefault,
         };
         

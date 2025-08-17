@@ -13,7 +13,7 @@
         "quantity": 1
       },
       {
-        "id": "2", 
+        "id": "2",
         "title": "Mountain Serenity",
         "price": 3000000,
         "quantity": 1
@@ -23,5 +23,611 @@
     "paymentMethod": "credit_card",
     "deliveryTime": "2024-01-20",
     "shippingMethod": "express"
+  },
+  {
+    "id": "order_1754401085916_mpzww1oxl",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "artwork_001",
+        "quantity": 2,
+        "product": {
+          "id": "artwork_001",
+          "name": "Tranh Phong Cảnh Biển",
+          "price": 1500000,
+          "image": "https://example.com/artwork1.jpg",
+          "artist": "Nguyễn Văn A",
+          "description": "Tranh sơn dầu phong cảnh biển đẹp"
+        },
+        "selectedOptions": {
+          "size": "50x70cm",
+          "frame": "Gỗ tự nhiên"
+        }
+      },
+      {
+        "productId": "artwork_002",
+        "quantity": 1,
+        "product": {
+          "id": "artwork_002",
+          "name": "Tranh Trừu Tượng",
+          "price": 2500000,
+          "image": "https://example.com/artwork2.jpg",
+          "artist": "Trần Thị B",
+          "description": "Tranh trừu tượng hiện đại"
+        },
+        "selectedOptions": {
+          "size": "80x100cm",
+          "frame": "Không khung"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Nguyễn Văn Test",
+      "phone": "0123456789",
+      "email": "test@example.com",
+      "address": "123 Đường ABC",
+      "city": "Hà Nội",
+      "district": "Cầu Giấy",
+      "ward": "Dịch Vọng",
+      "zipCode": "100000",
+      "note": "Giao hàng giờ hành chính"
+    },
+    "paymentMethod": {
+      "type": "cod",
+      "method": "Thanh toán khi nhận hàng"
+    },
+    "totalAmount": 5500000,
+    "status": "pending",
+    "createdAt": "2025-08-05T13:38:05.916Z",
+    "updatedAt": "2025-08-05T13:38:05.916Z"
+  },
+  {
+    "id": "order_1754401794425_dw4711sbv",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 4,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      },
+      {
+        "productId": "2",
+        "quantity": 1,
+        "product": {
+          "id": "2",
+          "name": "Mountain Serenity",
+          "price": 7200000,
+          "image": "https://picsum.photos/400/300?random=202",
+          "artist": "Michael Chen",
+          "description": "A breathtaking landscape capturing the majestic beauty of mountain ranges at golden hour."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Unknown",
+      "phone": "0123456789",
+      "email": "user@example.com",
+      "address": "Unknown Address",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 60770000,
+    "status": "pending",
+    "createdAt": "2025-08-05T13:49:54.425Z",
+    "updatedAt": "2025-08-05T13:49:54.425Z"
+  },
+  {
+    "id": "order_1754402194876_m3tw8sjox",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Home",
+      "phone": "0123456789",
+      "email": "user@example.com",
+      "address": "925 S Chugach St #APT 10, Alaska 99645",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "pay",
+      "method": "Pay"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-05T13:56:34.876Z",
+    "updatedAt": "2025-08-05T13:56:34.876Z"
+  },
+  {
+    "id": "order_1754402834369_ky0cwjfex",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 3,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Office",
+      "phone": "0123456789",
+      "email": "user@example.com",
+      "address": "2438 6th Ave, Ketchikan, Alaska 99601",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 39650000,
+    "status": "pending",
+    "createdAt": "2025-08-05T14:07:14.369Z",
+    "updatedAt": "2025-08-05T14:07:14.369Z"
+  },
+  {
+    "id": "order_1754403753895_luk48qaa2",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Home",
+      "phone": "0123456789",
+      "email": "user@example.com",
+      "address": "925 S Chugach St #APT 10, Alaska 99645",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-05T14:22:33.895Z",
+    "updatedAt": "2025-08-05T14:22:33.895Z"
+  },
+  {
+    "id": "order_1754405048916_uy5hayl5n",
+    "userId": "user123",
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Unknown",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "Unknown Address",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "pay",
+      "method": "Pay"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-05T14:44:08.916Z",
+    "updatedAt": "2025-08-05T14:44:08.916Z"
+  },
+  {
+    "id": "order_1754908790128_rjsn13dko",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "mydung",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "a77 bach dang",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-11T10:39:50.128Z",
+    "updatedAt": "2025-08-11T10:39:50.128Z"
+  },
+  {
+    "id": "order_1754911202934_zg8osrio3",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "2",
+        "quantity": 1,
+        "product": {
+          "id": "2",
+          "name": "Mountain Serenity",
+          "price": 7200000,
+          "image": "https://picsum.photos/400/300?random=202",
+          "artist": "Michael Chen",
+          "description": "A breathtaking landscape capturing the majestic beauty of mountain ranges at golden hour."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Unknown",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "Unknown Address",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 7970000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:20:02.934Z",
+    "updatedAt": "2025-08-11T11:20:02.934Z"
+  },
+  {
+    "id": "order_1754911839658_ymvoclaf1",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "3",
+        "quantity": 1,
+        "product": {
+          "id": "3",
+          "name": "Urban Geometry",
+          "price": 5200000,
+          "image": "https://picsum.photos/400/300?random=203",
+          "artist": "Emma Rodriguez",
+          "description": "Modern cubist interpretation of urban architecture with geometric forms and bold colors."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Unknown",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "Unknown Address",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 5770000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:30:39.658Z",
+    "updatedAt": "2025-08-11T11:30:39.658Z"
+  },
+  {
+    "id": "order_1754912438846_dta2547oa",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "2",
+        "quantity": 1,
+        "product": {
+          "id": "2",
+          "name": "Mountain Serenity",
+          "price": 7200000,
+          "image": "https://picsum.photos/400/300?random=202",
+          "artist": "Michael Chen",
+          "description": "A breathtaking landscape capturing the majestic beauty of mountain ranges at golden hour."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Office",
+      "phone": "no phone",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "2438 6th Ave, Ketchikan, Alaska 99601",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 7970000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:40:38.846Z",
+    "updatedAt": "2025-08-11T11:40:38.846Z"
+  },
+  {
+    "id": "order_1754912630832_1ycqabroo",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Home",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "123 Main St, Anytown, USA 12345",
+      "city": "Unknown City",
+      "district": "Unknown District",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:43:50.832Z",
+    "updatedAt": "2025-08-11T11:43:50.832Z"
+  },
+  {
+    "id": "order_1754912988951_louogiudl",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "Simple Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Home",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "123 Main St, Anytown, USA 12345",
+      "city": "",
+      "district": "",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:49:48.951Z",
+    "updatedAt": "2025-08-11T11:49:48.951Z"
+  },
+  {
+    "id": "order_1754913121757_rfuvacg17",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "4",
+        "quantity": 1,
+        "product": {
+          "id": "4",
+          "name": "Peaceful Waters",
+          "price": 6700000,
+          "image": "https://picsum.photos/400/300?random=204",
+          "artist": "David Kim",
+          "description": "Tranquil watercolor painting depicting a serene lake surrounded by lush greenery."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Home",
+      "phone": "no phone",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "123 Main St, Anytown, USA 12345",
+      "city": "",
+      "district": "",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 7420000,
+    "status": "pending",
+    "createdAt": "2025-08-11T11:52:01.757Z",
+    "updatedAt": "2025-08-11T11:52:01.757Z"
+  },
+  {
+    "id": "order_1755400066077_2gimgc6et",
+    "userId": 2,
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms."
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        }
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "mydung",
+      "phone": "0123456789",
+      "email": "lengocmydungg139@gmail.com",
+      "address": "A77 bachdang tan binh",
+      "city": "",
+      "district": "",
+      "ward": "Unknown Ward",
+      "zipCode": "000000",
+      "note": ""
+    },
+    "paymentMethod": {
+      "type": "card",
+      "method": "Card"
+    },
+    "totalAmount": 13250000,
+    "status": "pending",
+    "createdAt": "2025-08-17T03:07:46.077Z",
+    "updatedAt": "2025-08-17T03:07:46.077Z"
   }
-] 
+]

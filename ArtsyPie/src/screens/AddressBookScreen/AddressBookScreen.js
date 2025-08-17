@@ -21,27 +21,27 @@ export default function AddressBookScreen() {
   // Mock addresses data - in real app this would come from Redux state
   const [addresses, setAddresses] = useState([
     {
-      id: '1',
+      id: 'home',
       name: 'Home',
-      fullName: 'John Doe',
-      phone: '0123456789',
-      address: '123 Main St, Anytown, USA 12345',
+      address: '925 S Chugach St #APT 10, Alaska 99645',
       isDefault: true,
     },
     {
-      id: '2',
+      id: 'office',
       name: 'Office',
-      fullName: 'John Doe',
-      phone: '0123456789',
-      address: '456 Business Ave, Worktown, USA 67890',
+      address: '2438 6th Ave, Ketchikan, Alaska 99601',
       isDefault: false,
     },
     {
-      id: '3',
+      id: 'apartment',
       name: 'Apartment',
-      fullName: 'John Doe',
-      phone: '0123456789',
       address: '2551 Vista Dr #B301, Juneau, Alaska 99801',
+      isDefault: false,
+    },
+    {
+      id: 'parents',
+      name: "Parent's House",
+      address: '4821 Ridge Top Cir, Anchorage, Alaska 99504',
       isDefault: false,
     },
   ]);

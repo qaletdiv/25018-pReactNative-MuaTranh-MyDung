@@ -61,7 +61,7 @@ const AccountScreen = ({ navigation }) => {
       id: 'address',
       title: 'Address Book',
       icon: 'location',
-      onPress: () => navigation.navigate('AddressBook'),
+      onPress: () => navigation.navigate('AddressSelection'),
     },
     {
       id: 'editProfile',

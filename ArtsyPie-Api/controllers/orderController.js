@@ -70,13 +70,17 @@ function getOrderById(req, res) {
 // Tạo order mới
 function createOrder(req, res) {
   try {
-    const { items, shippingAddress, paymentMethod, totalAmount } = req.body;
-    const userId = req.user.id;
+    const { userId, items, shippingAddress, paymentMethod, totalAmount } = req.body;
+    console.log('userId:', userId);
+    console.log('items:', items);
+    console.log('shippingAddress:', shippingAddress);
+    console.log('paymentMethod:', paymentMethod);
+    console.log('totalAmount:', totalAmount);
     
-    if (!items || !shippingAddress || !paymentMethod || !totalAmount) {
+    if (!userId || !items || !shippingAddress || !paymentMethod || !totalAmount) {
       return res.status(400).json({
         success: false,
-        message: 'Thiếu thông tin đơn hàng'
+        message: 'Thiếu thông tin đơn hàng (userId, items, shippingAddress, paymentMethod, totalAmount)'
       });
     }
     

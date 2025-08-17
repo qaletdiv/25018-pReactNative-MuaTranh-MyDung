@@ -12,5 +12,12 @@
     "email": "lengocmydungg139@gmail.com",
     "passwordHash": "d523c81851bacd5e18549d17ca85a71944c834867e553d17417e1fb6b7b5ecd5",
     "createdAt": "2025-08-03T13:50:43.233Z"
+  },
+  {
+    "id": 3,
+    "fullName": "dung",
+    "email": "test@gmail.com",
+    "passwordHash": "d523c81851bacd5e18549d17ca85a71944c834867e553d17417e1fb6b7b5ecd5",
+    "createdAt": "2025-08-05T12:50:48.083Z"
   }
 ]

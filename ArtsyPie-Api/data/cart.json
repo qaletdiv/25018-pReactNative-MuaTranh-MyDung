@@ -1,7 +1,27 @@
 {
   "user123": {
-    "items": [],
-    "total": 0,
-    "itemCount": 0
+    "items": [
+      {
+        "productId": "1",
+        "quantity": 1,
+        "product": {
+          "id": "1",
+          "name": "Abstract Harmony",
+          "price": 12000000,
+          "image": "https://picsum.photos/400/300?random=201",
+          "artist": "Sarah Johnson",
+          "description": "A vibrant abstract composition exploring color theory and emotional expression through bold brushstrokes and dynamic forms.",
+          "type": "Oil Painting",
+          "style": "Abstract"
+        },
+        "selectedOptions": {
+          "size": "Standard",
+          "frame": "No Frame"
+        },
+        "addedAt": "2025-08-17T03:11:11.234Z"
+      }
+    ],
+    "total": 12000000,
+    "itemCount": 1
   }
 }

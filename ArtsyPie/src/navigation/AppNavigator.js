@@ -48,7 +48,7 @@ export default function AppNavigator() {
       <Stack.Screen name="AddressSelection" component={AddressSelectionScreen} />
       <Stack.Screen name="NewAddressScreen" component={NewAddressScreen} />
       <Stack.Screen name="DeliveryTimeSelection" component={DeliveryTimeSelectionScreen} />
-                      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
+      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
         <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
       <Stack.Screen name="LeaveReview" component={LeaveReviewScreen} />
       <Stack.Screen name="Notification" component={NotificationScreen} />
