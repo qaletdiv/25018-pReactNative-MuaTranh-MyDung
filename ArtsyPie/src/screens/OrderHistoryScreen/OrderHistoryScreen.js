@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './OrderHistoryScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { formatOrderDate, formatTime } from '../../utils/formatDate';
 import { fetchOrders } from '../../redux/slices/ordersSlice';
 
 // Helper function to map image filenames to require paths
@@ -49,9 +50,6 @@ const OrderHistoryScreen = ({ navigation, route }) => {
     }
   }, [dispatch, user?.email]);
 
-  // Debug: Log orders data
-  console.log('OrderHistoryScreen - orders:', orders);
-  console.log('OrderHistoryScreen - filteredOrders:', filteredOrders);
   
   // Nhận thông tin đơn hàng mới từ OrderConfirmationScreen
   const { newOrderId, highlightNewOrder } = route.params || {};
@@ -143,7 +141,49 @@ const OrderHistoryScreen = ({ navigation, route }) => {
         <View style={styles.orderHeader}>
           <View>
             <Text style={styles.orderNumber}>{item.id || item.orderNumber}</Text>
-            <Text style={styles.orderDate}>{item.orderDate || item.date}</Text>
+            
+            {/* Hiển thị ngày giờ đặt hàng đẹp hơn */}
+            <View style={styles.orderDateTimeContainer}>
+              {/* Debug: Log dữ liệu ngày */}
+              {console.log('OrderHistoryScreen - Date debug:', {
+                id: item.id,
+                orderDate: item.orderDate,
+                date: item.date,
+                createdAt: item.createdAt,
+                orderTime: item.orderTime
+              })}
+              
+              <Text style={styles.orderDate}>
+                📅 {(() => {
+                  // Fallback logic để hiển thị ngày
+                  if (item.orderDate) {
+                    return formatOrderDate(item.orderDate);
+                  } else if (item.date) {
+                    return formatOrderDate(item.date);
+                  } else if (item.createdAt) {
+                    return formatOrderDate(item.createdAt);
+                  } else {
+                    // Fallback: sử dụng ngày hiện tại
+                    return formatOrderDate(new Date().toISOString());
+                  }
+                })()}
+              </Text>
+              
+              <Text style={styles.orderTime}>
+                🕐 {(() => {
+                  // Fallback logic để hiển thị giờ
+                  if (item.orderTime) {
+                    return item.orderTime;
+                  } else if (item.createdAt) {
+                    return formatTime(item.createdAt);
+                  } else {
+                    // Fallback: sử dụng giờ hiện tại
+                    return formatTime(new Date().toISOString());
+                  }
+                })()}
+              </Text>
+            </View>
+            
             {isNewOrder && (
               <Text style={{ color: '#FFA500', fontSize: 12, fontWeight: 'bold' }}>
                 NEW ORDER

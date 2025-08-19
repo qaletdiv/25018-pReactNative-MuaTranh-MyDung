@@ -109,11 +109,14 @@ export default StyleSheet.create({
     marginBottom: 4,
     fontStyle: 'italic',
   },
+  optionsContainer: {
+    marginBottom: 8,
+  },
   productOption: {
     fontSize: 12,
     color: '#6c757d',
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   priceContainer: {
     flexDirection: 'row',

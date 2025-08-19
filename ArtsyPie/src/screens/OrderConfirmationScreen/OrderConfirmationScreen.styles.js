@@ -38,6 +38,24 @@ export default StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
+  orderDateTimeContainer: {
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 20,
+  },
+  orderDateText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  orderTimeText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
   totalAmount: {
     fontSize: 18,
     fontWeight: '700',

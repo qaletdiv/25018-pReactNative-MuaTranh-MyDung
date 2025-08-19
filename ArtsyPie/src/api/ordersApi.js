@@ -10,7 +10,7 @@ const ordersApi = {
   },
 
   createOrder: (orderData) => {
-    console.log('ordersApi.createOrder called with:', JSON.stringify(orderData, null, 2));
+    //console.log('ordersApi.createOrder called with:', JSON.stringify(orderData, null, 2));
     return axiosClient.post('/orders', orderData);
   },
 

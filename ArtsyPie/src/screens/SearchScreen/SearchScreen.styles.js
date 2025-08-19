@@ -33,7 +33,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 16,
-    paddingHorizontal: 16,
+    
     backgroundColor: '#fff',
   },
   resultsTitle: {

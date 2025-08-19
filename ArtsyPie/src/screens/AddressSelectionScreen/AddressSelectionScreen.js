@@ -30,24 +30,28 @@ export default function AddressSelectionScreen() {
       id: 'home',
       name: 'Home',
       address: '925 S Chugach St #APT 10, Alaska 99645',
+      phone: '+1 (907) 555-0123',
       isDefault: true,
     },
     {
       id: 'office',
       name: 'Office',
       address: '2438 6th Ave, Ketchikan, Alaska 99601',
+      phone: '+1 (907) 555-0456',
       isDefault: false,
     },
     {
       id: 'apartment',
       name: 'Apartment',
       address: '2551 Vista Dr #B301, Juneau, Alaska 99801',
+      phone: '+1 (907) 555-0789',
       isDefault: false,
     },
     {
       id: 'parents',
       name: "Parent's House",
       address: '4821 Ridge Top Cir, Anchorage, Alaska 99504',
+      phone: '+1 (907) 555-0321',
       isDefault: false,
     },
   ]);
@@ -177,7 +181,7 @@ export default function AddressSelectionScreen() {
       ...selectedAddressData,
       name: selectedAddressData?.name || selectedAddressData?.fullName || 'Unknown',
       fullName: selectedAddressData?.fullName || selectedAddressData?.name || 'Unknown',
-      phone: selectedAddressData?.phone || 'no phone',
+      phone: selectedAddressData?.phone || 'No phone',
     };
     
     // Chỉ truyền địa chỉ đã chọn, KHÔNG truyền delivery time để tránh conflict
@@ -200,6 +204,7 @@ export default function AddressSelectionScreen() {
               <Text style={styles.addressName}>{address.name}</Text>
             </View>
             <Text style={styles.addressText}>{address.address}</Text>
+            <Text style={styles.phoneText}>📞 {address.phone || 'No phone'}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -252,6 +257,9 @@ export default function AddressSelectionScreen() {
           <Ionicons name="add" size={20} color={COLORS.primary} />
           <Text style={styles.addNewButtonText}>Add New Address</Text>
         </TouchableOpacity>
+        
+        {/* Thêm padding bottom để tránh bị che bởi nút Apply */}
+        <View style={styles.bottomPadding} />
       </ScrollView>
 
       {/* Apply Button */}

@@ -94,6 +94,14 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#888888',
   },
+  orderDateTimeContainer: {
+    marginBottom: 4,
+  },
+  orderTime: {
+    fontSize: 12,
+    color: '#999999',
+    marginTop: 2,
+  },
   statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,

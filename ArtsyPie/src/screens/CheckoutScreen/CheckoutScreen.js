@@ -65,10 +65,10 @@ export default function CheckoutScreen() {
   }, [route.params?.selectedDeliveryTime?.id, selectedDeliveryTime]);
 
   const availableAddresses = userAddresses.length > 0 ? userAddresses : [
-    { id: 'home', name: 'Home', address: '123 Main St, Anytown, USA 12345', isDefault: true },
-    { id: 'office', name: 'Office', address: '456 Business Ave, Worktown, USA 67890', isDefault: false },
-    { id: 'apartment', name: 'Apartment', address: '2551 Vista Dr #B301, Juneau, Alaska 99801', isDefault: false, },
-    { id: 'parents', name: "Parent's House", address: '4821 Ridge Top Cir, Anchorage, Alaska 99504', isDefault: false, },
+    { id: 'home', name: 'Home', address: '123 Main St, Anytown, USA 12345', phone: '+1 (555) 123-4567', isDefault: true },
+    { id: 'office', name: 'Office', address: '456 Business Ave, Worktown, USA 67890', phone: '+1 (555) 987-6543', isDefault: false },
+    { id: 'apartment', name: 'Apartment', address: '2551 Vista Dr #B301, Juneau, Alaska 99801', phone: '+1 (907) 555-0789', isDefault: false, },
+    { id: 'parents', name: "Parent's House", address: '4821 Ridge Top Cir, Anchorage, Alaska 99504', phone: '+1 (907) 555-0321', isDefault: false, },
   ];
 
   useEffect(() => {
@@ -183,15 +183,15 @@ export default function CheckoutScreen() {
 
   const handlePlaceOrder = async () => {
     try {
-             console.log('=== Starting order creation ===');
-       console.log('User:', user);
-       console.log('Cart items:', currentCartItems);
-       console.log('Selected address state:', selectedAddress);
-       console.log('Selected payment:', selectedPayment);
-       console.log('Selected delivery time:', selectedDeliveryTime);
-       console.log('User addresses from Redux:', userAddresses);
-       console.log('Available addresses:', availableAddresses);
-       console.log('Route params selectedAddress:', route.params?.selectedAddress);
+      //   console.log     ('=== Starting order creation ===');
+      //  console.log('User:', user);
+      //  console.log('Cart items:', currentCartItems);
+      //  console.log('Selected address state:', selectedAddress);
+      //  console.log('Selected payment:', selectedPayment);
+      //  console.log('Selected delivery time:', selectedDeliveryTime);
+      //  console.log('User addresses from Redux:', userAddresses);
+      //  console.log('Available addresses:', availableAddresses);
+      //  console.log('Route params selectedAddress:', route.params?.selectedAddress);
       
       // Tìm địa chỉ hiện tại từ route params hoặc từ addresses array (giống như trong renderDeliveryAddress)
       let currentAddress = route.params?.selectedAddress;
@@ -208,7 +208,7 @@ export default function CheckoutScreen() {
       const selectedDelivery = deliveryOptions.find(d => d.id === selectedDeliveryTime);
       const selectedPaymentMethod = paymentMethods.find(p => p.id === selectedPayment);
       
-             console.log('Current address found:', currentAddress);
+             //console.log('Current address found:', currentAddress);
        console.log('Current address details:', {
          id: currentAddress?.id,
          name: currentAddress?.name,
@@ -216,8 +216,6 @@ export default function CheckoutScreen() {
          address: currentAddress?.address,
          phone: currentAddress?.phone
        });
-       console.log('Selected delivery found:', selectedDelivery);
-       console.log('Selected payment method found:', selectedPaymentMethod);
       
       const orderData = {
         userId: user?.id || user?.userId || 'unknown_user',
@@ -387,6 +385,9 @@ export default function CheckoutScreen() {
             </View>
             <Text style={styles.addressText}>
               {currentAddress?.address || '123 Main St, Anytown, USA 12345'}
+            </Text>
+            <Text style={styles.phoneText}>
+              📞 {currentAddress?.phone || 'No phone'}
             </Text>
           </View>
         </View>

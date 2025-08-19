@@ -112,10 +112,7 @@ export default function OrderDetailScreen() {
   // Sử dụng order từ params nếu có, không thì dùng từ Redux
   const order = orderFromParams || currentOrder;
   
-  // Debug log
-  console.log('OrderDetailScreen - order:', order);
-  console.log('OrderDetailScreen - orderId:', orderId);
-  console.log('OrderDetailScreen - loading:', loading);
+
 
   const renderOrderHeader = () => (
     <View style={styles.orderHeader}>

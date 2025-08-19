@@ -88,11 +88,9 @@ const ordersSlice = createSlice({
       state.currentOrder = action.payload;
     },
     addNewOrder: (state, action) => {
-      console.log('addNewOrder called with:', action.payload);
       
       const existingOrder = state.orders.find(order => order.id === action.payload.id);
       if (existingOrder) {
-        console.log('Order already exists, updating...');
         // Update existing order
         Object.assign(existingOrder, action.payload);
         return;
@@ -102,6 +100,12 @@ const ordersSlice = createSlice({
         id: action.payload.id || `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         orderNumber: action.payload.orderNumber || action.payload.id || `ORD-${new Date().getFullYear()}-${String(state.orders.length + 1).padStart(3, '0')}`,
         date: action.payload.date || action.payload.orderDate || new Date().toISOString().split('T')[0],
+        orderDate: action.payload.orderDate || action.payload.date || new Date().toISOString().split('T')[0], // Đảm bảo cả hai field đều có
+        orderTime: action.payload.orderTime || new Date().toLocaleTimeString('vi-VN', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }),
+        createdAt: action.payload.createdAt || new Date().toISOString(),
         status: action.payload.status || 'pending',
         total: action.payload.total || 0,
         products: (action.payload.products || []).map((product, index) => ({
@@ -116,7 +120,13 @@ const ordersSlice = createSlice({
         shippingMethod: action.payload.shippingMethod,
       };
       
-      console.log('Adding new order to state:', newOrder);
+      console.log('Date fields check:', {
+        date: newOrder.date,
+        orderDate: newOrder.orderDate,
+        orderTime: newOrder.orderTime,
+        createdAt: newOrder.createdAt
+      });
+      
       // Thêm order mới vào đầu danh sách
       state.orders.unshift(newOrder);
       
@@ -139,7 +149,7 @@ const ordersSlice = createSlice({
       })
           .addCase(fetchOrders.fulfilled, (state, action) => {
       state.loading = false;
-      console.log('fetchOrders.fulfilled - API response:', action.payload);
+      
       
       // Sắp xếp orders theo createdAt (mới nhất ở đầu)
       const sortedOrders = action.payload.sort((a, b) => {

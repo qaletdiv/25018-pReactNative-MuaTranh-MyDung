@@ -16,6 +16,7 @@ export default StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    paddingTop:50,
   },
   backButton: {
     padding: 8,

@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './OrderConfirmationScreen.styles';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { formatDate, formatTime } from '../../utils/formatDate';
 import { COLORS } from '../../theme/colors';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { addNewOrder } from '../../redux/slices/ordersSlice';
@@ -57,10 +58,22 @@ export default function OrderConfirmationScreen() {
   // Thêm order vào Redux store nếu chưa có
   React.useEffect(() => {
     if (orderId && finalTotal > 0) {
+      // Tạo ngày tháng đơn hàng TRƯỚC KHI tạo newOrder
+      const now = new Date();
+      const orderDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; // Format: YYYY-MM-DD
+      const orderTime = now.toLocaleTimeString('en-US', { 
+        hour12: false, 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      
       const newOrder = {
         id: orderId,
         orderNumber: orderId,
-        date: new Date().toISOString().split('T')[0],
+        date: orderDate, // Sử dụng orderDate đã tạo
+        orderDate: orderDate, // Thêm cả orderDate để đảm bảo tương thích
+        orderTime: orderTime, // Sử dụng orderTime đã tạo
+        createdAt: new Date().toISOString(), // Thêm timestamp đầy đủ
         status: 'pending',
         total: finalTotal,
         products: items?.map(item => ({
@@ -79,12 +92,11 @@ export default function OrderConfirmationScreen() {
         shippingMethod: selectedShippingMethod,
       };
       
-      //console.log('Adding new order to Redux:', newOrder);
       dispatch(addNewOrder(newOrder));
     }
   }, [orderId, finalTotal, items, selectedAddress, selectedPayment, selectedDeliveryTime, selectedShippingMethod]);
   
-  // Tạo ngày tháng đơn hàng
+  // Tạo ngày tháng đơn hàng cho hiển thị UI
   const now = new Date();
   const orderDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; // Format: YYYY-MM-DD
   const orderTime = now.toLocaleTimeString('en-US', { 
@@ -255,6 +267,17 @@ export default function OrderConfirmationScreen() {
         </View>
         <Text style={styles.successTitle}>Order Placed Successfully!</Text>
         <Text style={styles.orderId}>Order ID: {orderId}</Text>
+        
+        {/* Thêm thông tin ngày giờ đặt hàng */}
+        <View style={styles.orderDateTimeContainer}>
+          <Text style={styles.orderDateText}>
+            📅 {formatDate(orderDate)}
+          </Text>
+          <Text style={styles.orderTimeText}>
+            🕐 {formatTime(orderDate + 'T' + orderTime)}
+          </Text>
+        </View>
+        
         <Text style={styles.totalAmount}>Total: {formatCurrency(finalTotal)}</Text>
       </View>
 

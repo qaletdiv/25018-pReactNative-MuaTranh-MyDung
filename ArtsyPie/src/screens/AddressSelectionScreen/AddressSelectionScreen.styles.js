@@ -32,7 +32,8 @@ export default StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 20, // Thêm padding bottom
   },
   sectionTitle: {
     fontSize: 18,
@@ -95,6 +96,17 @@ export default StyleSheet.create({
     color: '#666',
     lineHeight: 20,
   },
+  phoneText: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 4,
+    fontWeight: '500',
+    backgroundColor: '#f8f8f8',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
   addressActions: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,6 +144,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 8,
+    marginBottom: 16, // Thêm margin bottom để tạo khoảng cách
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -147,12 +160,19 @@ export default StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
+  bottomPadding: {
+    height: 100,
+  },
   bottomContainer: {
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 16,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
+    position: 'absolute', 
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   applyButton: {
     backgroundColor: COLORS.primary,

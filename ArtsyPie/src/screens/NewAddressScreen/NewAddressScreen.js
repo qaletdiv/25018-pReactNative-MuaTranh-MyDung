@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Alert,
   Modal,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -20,17 +21,18 @@ export default function NewAddressScreen() {
   
   const [addressNickname, setAddressNickname] = useState(editAddress?.name || '');
   const [fullAddress, setFullAddress] = useState(editAddress?.address || '');
+  const [phoneNumber, setPhoneNumber] = useState(editAddress?.phone || '');
   const [isDefault, setIsDefault] = useState(editAddress?.isDefault || false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const addressNicknames = ['Home', 'Office', 'Apartment', 'Parent\'s House', 'Other'];
 
-  const isFormValid = addressNickname && fullAddress.trim();
+  const isFormValid = addressNickname && fullAddress.trim() && phoneNumber.trim();
   const isEditMode = !!editAddress;
 
   const handleAddAddress = async () => {
     if (!isFormValid) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert('Error', 'Please fill in all required fields (Address Nickname, Phone Number, and Full Address)');
       return;
     }
 
@@ -42,7 +44,7 @@ export default function NewAddressScreen() {
           name: addressNickname,
           fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
-          phone: editAddress.phone || 'no phone', // Giữ phone cũ hoặc dùng mặc định
+          phone: phoneNumber, // Sử dụng phone number từ input
           isDefault: isDefault,
         };
         
@@ -57,7 +59,7 @@ export default function NewAddressScreen() {
           name: addressNickname,
           fullName: addressNickname, // Thêm fullName để tương thích
           address: fullAddress,
-          phone: 'no phone', // Thêm phone mặc định
+          phone: phoneNumber, // Sử dụng phone number từ input
           isDefault: isDefault,
         };
         
@@ -101,58 +103,75 @@ export default function NewAddressScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.inputLabel}>Address Nickname</Text>
-        <TextInput
-          style={styles.textInput}
-          value={addressNickname}
-          onChangeText={setAddressNickname}
-          placeholder="Enter address nickname (e.g., Home, Office, etc.)"
-        />
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.inputLabel}>Full Address</Text>
-        <TextInput
-          style={styles.textInput}
-          value={fullAddress}
-          onChangeText={setFullAddress}
-          placeholder="Enter your full address..."
-          multiline
-          numberOfLines={3}
-        />
-      </View>
-
-      <TouchableOpacity 
-        style={styles.checkboxContainer}
-        onPress={() => setIsDefault(!isDefault)}
+      <ScrollView 
+        style={styles.formScrollView} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.formScrollContent}
       >
-        <View style={[
-          styles.checkbox,
-          isDefault && styles.checkboxChecked
-        ]}>
-          {isDefault && (
-            <Ionicons name="checkmark" size={16} color="#fff" />
-          )}
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Address Nickname</Text>
+          <TextInput
+            style={styles.textInput}
+            value={addressNickname}
+            onChangeText={setAddressNickname}
+            placeholder="Enter address nickname (e.g., Home, Office, etc.)"
+          />
         </View>
-        <Text style={styles.checkboxText}>Make this as a default address</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[
-          styles.addButton,
-          !isFormValid && styles.addButtonDisabled
-        ]}
-        onPress={handleAddAddress}
-        disabled={!isFormValid}
-      >
-        <Text style={[
-          styles.addButtonText,
-          !isFormValid && styles.addButtonTextDisabled
-        ]}>
-          {isEditMode ? 'Update' : 'Add'}
-        </Text>
-      </TouchableOpacity>
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Phone Number</Text>
+          <TextInput
+            style={styles.textInput}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            placeholder="Enter your phone number"
+            keyboardType="phone-pad"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.inputLabel}>Full Address</Text>
+          <TextInput
+            style={styles.textInput}
+            value={fullAddress}
+            onChangeText={setFullAddress}
+            placeholder="Enter your full address..."
+            multiline
+            numberOfLines={3}
+          />
+        </View>
+
+        <TouchableOpacity 
+          style={styles.checkboxContainer}
+          onPress={() => setIsDefault(!isDefault)}
+        >
+          <View style={[
+            styles.checkbox,
+            isDefault && styles.checkboxChecked
+          ]}>
+            {isDefault && (
+              <Ionicons name="checkmark" size={16} color="#fff" />
+            )}
+          </View>
+          <Text style={styles.checkboxText}>Make this as a default address</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[
+            styles.addButton,
+            !isFormValid && styles.addButtonDisabled
+          ]}
+          onPress={handleAddAddress}
+          disabled={!isFormValid}
+        >
+          <Text style={[
+            styles.addButtonText,
+            !isFormValid && styles.addButtonTextDisabled
+          ]}>
+            {isEditMode ? 'Update' : 'Add'}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 

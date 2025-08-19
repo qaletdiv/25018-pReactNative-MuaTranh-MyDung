@@ -93,9 +93,31 @@ router.put('/:productId', mockUserMiddleware, (req, res) => {
 router.delete('/:productId', mockUserMiddleware, (req, res) => {
   try {
     const { productId } = req.params;
+    const { selectedOptions } = req.body;
     const userId = req.user.id;
     
-    const cart = cartController.removeFromCart(userId, productId);
+    const cart = cartController.removeFromCart(userId, productId, selectedOptions);
+    res.json({ 
+      success: true,
+      message: 'Sản phẩm đã được xóa khỏi giỏ hàng',
+      data: cart
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false,
+      message: 'Lỗi server', 
+      error: error.message 
+    });
+  }
+});
+
+// DELETE /api/cart/item/:index - Remove specific cart item by index
+router.delete('/item/:index', mockUserMiddleware, (req, res) => {
+  try {
+    const { index } = req.params;
+    const userId = req.user.id;
+    
+    const cart = cartController.removeCartItemByIndex(userId, parseInt(index));
     res.json({ 
       success: true,
       message: 'Sản phẩm đã được xóa khỏi giỏ hàng',

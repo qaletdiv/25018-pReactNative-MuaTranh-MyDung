@@ -85,6 +85,17 @@ export default StyleSheet.create({
     color: '#666',
     lineHeight: 20,
   },
+  phoneText: {
+    fontSize: 13,
+    color: '#888',
+    marginTop: 4,
+    fontWeight: '500',
+    backgroundColor: '#f8f8f8',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
   changeButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,

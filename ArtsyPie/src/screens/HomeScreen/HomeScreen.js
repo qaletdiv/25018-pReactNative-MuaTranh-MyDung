@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import styles from './HomeScreen.styles';
 
 import SearchBar from '../../components/SearchBar/SearchBar';
-import Category from '../../components/Category/Category';
+import CollectionBanner from '../../components/Category/Category';
 import ArtCard from '../../components/ArtCard/ArtCard';
 import ArtistCard from '../../components/ArtistCard/ArtistCard';
 import CategoryList from '../../components/CategoryList/CategoryList';
@@ -37,57 +37,55 @@ export default function HomeScreen() {
     }
   }, [artworks]);
 
-  // Dữ liệu artists 
-  const artistsData = [
-    {
-      id: 1,
-      name: "Jessica Math",
-      country: "Italy",
-      paintings: 12,
-      avatar: "https://i.pravatar.cc/150?img=5",
-      specialty: "Abstract"
-    },
-    {
-      id: 2,
-      name: "Marco Rossi",
-      country: "Italy", 
-      paintings: 8,
-      avatar: "https://i.pravatar.cc/150?img=12",
-      specialty: "Landscape"
-    },
-    {
-      id: 3,
-      name: "Sophie Chen",
-      country: "China",
-      paintings: 15,
-      avatar: "https://i.pravatar.cc/150?img=23",
-      specialty: "Modern"
-    },
-    {
-      id: 4,
-      name: "Alex Johnson",
-      country: "USA",
-      paintings: 6,
-      avatar: "https://i.pravatar.cc/150?img=34",
-      specialty: "Portrait"
-    },
-    {
-      id: 5,
-      name: "Elena Petrova",
-      country: "Russia",
-      paintings: 10,
-      avatar: "https://i.pravatar.cc/150?img=45",
-      specialty: "Impressionist"
-    },
-    {
-      id: 6,
-      name: "Carlos Mendez",
-      country: "Spain",
-      paintings: 9,
-      avatar: "https://i.pravatar.cc/150?img=56",
-      specialty: "Contemporary"
-    }
-  ];
+  // Hàm helper để lấy thông tin artist (gán cứng nhưng hợp lý)
+  const getArtistInfo = (artistName) => {
+    const artistInfoMap = {
+      'Vincent van Gogh': { location: 'Amsterdam', gender: 'Male', age: '37 years old' },
+      'Pablo Picasso': { location: 'Barcelona', gender: 'Male', age: '91 years old' },
+      'Claude Monet': { location: 'Paris', gender: 'Male', age: '86 years old' },
+      'Sarah Johnson': { location: 'New York', gender: 'Female', age: '28 years old' },
+      'Michael Chen': { location: 'Beijing', gender: 'Male', age: '35 years old' },
+      'Emma Rodriguez': { location: 'Madrid', gender: 'Female', age: '31 years old' },
+      'David Kim': { location: 'Seoul', gender: 'Male', age: '42 years old' },
+      'Lisa Thompson': { location: 'London', gender: 'Female', age: '29 years old' },
+      'Alex Rivera': { location: 'Mexico City', gender: 'Male', age: '33 years old' },
+      'Maria Garcia': { location: 'Valencia', gender: 'Female', age: '38 years old' },
+      'James Wilson': { location: 'Los Angeles', gender: 'Male', age: '45 years old' }
+    };
+    
+    return artistInfoMap[artistName] || { 
+      location: 'Unknown City', 
+      gender: 'Unknown', 
+      age: 'Unknown age' 
+    };
+  };
+
+  // Dữ liệu artists - lấy từ artworks thực tế
+  const artistsData = React.useMemo(() => {
+    if (!artworks || !Array.isArray(artworks)) return [];
+    
+    // Lấy unique artists từ artworks
+    const uniqueArtists = [...new Set(artworks.map(item => item.artist))];
+    
+    // Tạo artist data với thông tin thực tế
+    return uniqueArtists.map((artistName, index) => {
+      // Đếm số sản phẩm của artist này
+      const artistProducts = artworks.filter(item => item.artist === artistName);
+      
+      // Thông tin artist thực tế (gán cứng nhưng hợp lý)
+      const artistInfo = getArtistInfo(artistName);
+      
+      return {
+        id: index + 1,
+        name: artistName,
+        location: artistInfo.location,
+        gender: artistInfo.gender,
+        age: artistInfo.age,
+        paintings: artistProducts.length,
+        avatar: `https://i.pravatar.cc/150?img=${index + 1}`,
+      };
+    });
+  }, [artworks]);
 
   // Hàm xử lý khi nhấn search (Enter hoặc icon search)
   const handleSearchSubmit = () => {
@@ -146,7 +144,12 @@ export default function HomeScreen() {
   };
 
   const handleArtistPress = (artist) => {
-    navigation.navigate('ProductList', { artist: artist.name });
+    // Navigate to SearchScreen with artist filter
+    navigation.navigate('SearchScreen', { 
+      artistFilter: artist.name,
+      initialSearchText: artist.name,
+      initialFilters: { ...activeFilters, artist: artist.name }
+    });
   };
 
   const renderLoadingState = () => (
@@ -185,7 +188,7 @@ export default function HomeScreen() {
         onSearch={handleSearchSubmit}
         onFilterPress={handleFilterPress}
       />
-      <Category />
+      <CollectionBanner />
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>New Arts</Text>
@@ -216,20 +219,28 @@ export default function HomeScreen() {
       )}
 
       <Text style={styles.sectionTitle}>Artists</Text>
-      <FlatList
-        data={artistsData}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <ArtistCard
-            name={item.name}
-            country={`${item.country} · ${item.paintings} paintings`}
-            avatar={item.avatar}
-            onPress={() => handleArtistPress(item)}
-          />
-        )}
-      />
+      {artistsData.length > 0 ? (
+        <FlatList
+          data={artistsData}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.artistsContainer}
+          renderItem={({ item }) => (
+            <ArtistCard
+              name={item.name}
+              country={`${item.location} · ${item.paintings} paintings`}
+              specialty={`${item.gender}, ${item.age}`}
+              avatar={item.avatar}
+              onPress={() => handleArtistPress(item)}
+            />
+          )}
+        />
+      ) : (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyText}>No artists available</Text>
+        </View>
+      )}
       
       <Text style={styles.sectionTitle}>Catalog</Text>
       <CategoryList data={catalog} style={styles.categoryList}/>

@@ -18,6 +18,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import {
   fetchCartAsync,
   removeFromCartAsync,
+  removeCartItemByIndexAsync,
   updateCartItemAsync,
   clearCartAsync
 } from '../../redux/slices/cartSlice';
@@ -31,10 +32,7 @@ const CartScreen = () => {
   const { cartItems, loading, error } = useSelector(state => state.cart);
   const artworks = useSelector(state => state.artworks.artworks);
 
-  // Debug log
-  // console.log('CartScreen - cartItems:', cartItems);
-  // console.log('CartScreen - loading:', loading);
-  // console.log('CartScreen - error:', error);
+
 
   // Load cart and artworks data when component mounts
   useEffect(() => {
@@ -42,7 +40,17 @@ const CartScreen = () => {
       try {
         await dispatch(fetchCartAsync()).unwrap();
       } catch (error) {
-        Alert.alert('Error', error || 'Cannot load cart');
+        Alert.alert(
+          'Lỗi tải giỏ hàng', 
+          error || 'Không thể tải giỏ hàng. Vui lòng thử lại.',
+          [
+            { text: 'Hủy', style: 'cancel' },
+            { 
+              text: 'Thử lại', 
+              onPress: () => loadCart()
+            }
+          ]
+        );
       }
     };
 
@@ -51,17 +59,20 @@ const CartScreen = () => {
   }, [dispatch]);
 
   const handleUpdateQuantity = async (item, newQuantity) => {
-    const itemId = item.productId || item.id;
     if (newQuantity <= 0) {
+      // Nếu quantity <= 0, xóa sản phẩm
       try {
-        await dispatch(removeFromCartAsync(itemId)).unwrap();
+        await dispatch(removeFromCartAsync({
+          productId: item.productId,
+          selectedOptions: item.selectedOptions
+        })).unwrap();
       } catch (error) {
         Alert.alert('Error', error || 'Cannot remove product');
       }
     } else {
       try {
         await dispatch(updateCartItemAsync({
-          productId: itemId,
+          productId: item.productId,
           quantity: newQuantity,
           selectedOptions: item.selectedOptions
         })).unwrap();
@@ -71,12 +82,51 @@ const CartScreen = () => {
     }
   };
 
-  const handleRemoveItem = async (itemId) => {
-    try {
-      await dispatch(removeFromCartAsync(itemId)).unwrap();
-    } catch (error) {
+  // Cách 1: Xóa theo selectedOptions (chính xác)
+  const handleRemoveItem = (productId, selectedOptions) => {
+    Alert.alert(
+      'Xác nhận xóa',
+      'Bạn có chắc muốn xóa sản phẩm này?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        { 
+          text: 'Xóa', 
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await dispatch(removeFromCartAsync({
+                productId,
+                selectedOptions
+              })).unwrap();
+            } catch (error) {
               Alert.alert('Error', error || 'Cannot remove product');
-    }
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  // Cách 2: Xóa theo index (dễ dàng hơn)
+  const handleRemoveItemByIndex = (index) => {
+    Alert.alert(
+      'Xác nhận xóa',
+      'Bạn có chắc muốn xóa sản phẩm này?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        { 
+          text: 'Xóa', 
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await dispatch(removeCartItemByIndexAsync(index)).unwrap();
+            } catch (error) {
+              Alert.alert('Error', error || 'Cannot remove product');
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleClearCart = async () => {
@@ -108,17 +158,22 @@ const CartScreen = () => {
       : require('../../../assets/Images/Product/plus1.jpg');
 
     return (
-      <View key={`${item.id}_${index}`} style={styles.cartItem}>
+      <View key={`${item.productId}-${JSON.stringify(item.selectedOptions)}-${index}`} style={styles.cartItem}>
         <Image source={imageSource} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text style={styles.productName}>{item.product?.name || 'Unknown Product'}</Text>
           <Text style={styles.productAuthor}>{item.product?.artist || 'Unknown Artist'}</Text>
-          <Text style={styles.productOption}>
-            {item.selectedOptions ?
-              `${item.selectedOptions.size}, ${item.selectedOptions.frame}` :
-              'Standard, No Frame'
-            }
-          </Text>
+          
+          {/* Hiển thị selectedOptions */}
+          <View style={styles.optionsContainer}>
+            <Text style={styles.productOption}>
+              Size: {item.selectedOptions?.size || 'Standard'}
+            </Text>
+            <Text style={styles.productOption}>
+              Frame: {item.selectedOptions?.frame || 'No Frame'}
+            </Text>
+          </View>
+          
           <View style={styles.priceContainer}>
             <Text style={styles.originalPrice}>
               {formatCurrency(((item.product?.price || 0) * 1.05) * item.quantity)}
@@ -143,9 +198,11 @@ const CartScreen = () => {
                 <Ionicons name="add" size={16} color="#2B2B2B" />
               </TouchableOpacity>
             </View>
+            
+            {/* Delete button - Sử dụng index (dễ dàng hơn) */}
             <TouchableOpacity
               style={styles.removeButton}
-              onPress={() => handleRemoveItem(item.productId || item.id)}
+              onPress={() => handleRemoveItemByIndex(index)}
             >
               <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
             </TouchableOpacity>

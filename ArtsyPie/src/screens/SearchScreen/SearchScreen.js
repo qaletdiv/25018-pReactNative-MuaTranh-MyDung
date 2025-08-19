@@ -19,6 +19,9 @@ export default function SearchScreen() {
   const route = useNavigation().getState().routes.find(r => r.name === 'SearchScreen');
   const initialSearchText = route?.params?.initialSearchText || '';
   const initialFilters = route?.params?.initialFilters || {};
+  const artistFilter = route?.params?.artistFilter || '';
+  const searchTitle = route?.params?.searchTitle || '';
+  const tagFilter = route?.params?.tagFilter || '';
   
   const [searchText, setSearchText] = useState(initialSearchText);
   const [searchResults, setSearchResults] = useState([]);
@@ -34,9 +37,9 @@ export default function SearchScreen() {
 
   // const popularData = ['Tranh sơn dầu', 'Tranh phong cảnh', 'Tranh hiện đại'];
 
-  // Tự động search nếu có initialSearchText
+  // Tự động search nếu có initialSearchText, artistFilter hoặc tagFilter
   useEffect(() => {
-    if (initialSearchText) {
+    if (initialSearchText || artistFilter || tagFilter) {
       handleSearchSubmit();
     }
   }, []);
@@ -48,36 +51,65 @@ export default function SearchScreen() {
 
   // Hàm thực hiện search khi nhấn Enter hoặc icon search
   const handleSearchSubmit = () => {
-    if (searchText.trim() === '') {
+    if (searchText.trim() === '' && !artistFilter && !tagFilter) {
       setSearchResults([]);
       setFilteredResults([]);
       return;
     }
 
-    // Chuẩn hóa chuỗi tìm kiếm
-    const normalizedText = searchText.toLowerCase().normalize("NFC");
+    let results = [];
 
-    const results = artworks.filter(
-      (item) => {
-        // Chuẩn hóa dữ liệu gốc trước khi so sánh
-        const normalizedTitle = item.title.toLowerCase().normalize("NFC");
-        const normalizedArtist = item.artist.toLowerCase().normalize("NFC");
-        
-        return normalizedTitle.includes(normalizedText) || normalizedArtist.includes(normalizedText);
-      }
-    );
+    if (tagFilter) {
+      // Filter by tag when navigating from tag
+      results = artworks.filter(item => {
+        // Logic filter theo tag (có thể customize theo yêu cầu)
+        if (tagFilter === 'New') {
+          return item.id <= 3; // Giả sử 3 sản phẩm đầu là New
+        } else if (tagFilter === 'Hot') {
+          return item.id > 3 && item.id <= 6; // Giả sử sản phẩm 4-6 là Hot
+        } else if (tagFilter === 'Trending') {
+          return item.id > 6; // Giả sử sản phẩm còn lại là Trending
+        }
+        return false;
+      });
+    } else if (artistFilter) {
+      // Filter by artist when navigating from artist card
+      results = artworks.filter(item => 
+        item.artist.toLowerCase().includes(artistFilter.toLowerCase())
+      );
+    } else if (searchText.trim()) {
+      // Normal search by title or artist
+      const normalizedText = searchText.toLowerCase().normalize("NFC");
+
+      results = artworks.filter(
+        (item) => {
+          // Chuẩn hóa dữ liệu gốc trước khi so sánh
+          const normalizedTitle = item.title.toLowerCase().normalize("NFC");
+          const normalizedArtist = item.artist.toLowerCase().normalize("NFC");
+          
+          return normalizedTitle.includes(normalizedText) || normalizedArtist.includes(normalizedText);
+        }
+      );
+    }
 
     setSearchResults(results);
     applyFilters(results, activeFilters);
 
     // Cập nhật lastSearches nếu không trùng lặp
-    if (!lastSearches.includes(searchText.trim())) {
+    if (searchText.trim() && !lastSearches.includes(searchText.trim())) {
       setLastSearches([searchText.trim(), ...lastSearches].slice(0, 10));
     }
   };
 
   const applyFilters = (data, filters) => {
     let filtered = [...data];
+
+    // Lọc theo artist (khi navigate từ artist card)
+    if (filters.artist && filters.artist !== 'All') {
+      filtered = filtered.filter(item => 
+        item.artist.toLowerCase().includes(filters.artist.toLowerCase())
+      );
+    }
 
     // Lọc theo loại hình
     if (filters.types && filters.types.length > 0) {
@@ -148,13 +180,21 @@ export default function SearchScreen() {
   );
 
   const renderSearchResults = () => {
-    const dataToShow = searchText ? filteredResults : [];
+    const dataToShow = searchText || artistFilter || tagFilter ? filteredResults : [];
     
-    if (dataToShow.length === 0 && searchText) {
+    if (dataToShow.length === 0 && (searchText || artistFilter || tagFilter)) {
       return (
         <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>Không tìm thấy kết quả nào.</Text>
-          <Text style={styles.noResultsSubtext}>Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc.</Text>
+          <Text style={styles.noResultsText}>
+            {tagFilter ? `Không tìm thấy sản phẩm ${tagFilter.toLowerCase()}.` : 
+             artistFilter ? `Không tìm thấy sản phẩm nào của ${artistFilter}.` : 
+             'Không tìm thấy kết quả nào.'}
+          </Text>
+          <Text style={styles.noResultsSubtext}>
+            {tagFilter ? 'Thử tìm kiếm với tag khác hoặc điều chỉnh bộ lọc.' :
+             artistFilter ? 'Thử tìm kiếm với artist khác hoặc điều chỉnh bộ lọc.' :
+             'Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc.'}
+          </Text>
         </View>
       );
     }
@@ -170,7 +210,9 @@ export default function SearchScreen() {
         ListHeaderComponent={
           <View style={styles.resultsHeader}>
             <Text style={styles.resultsTitle}>
-              {dataToShow.length} product(s)
+              {tagFilter ? searchTitle : 
+               artistFilter ? `Products by ${artistFilter}` : 
+               `${dataToShow.length} product(s)`}
             </Text>
             <TouchableOpacity 
               style={styles.filterButton}
@@ -188,6 +230,7 @@ export default function SearchScreen() {
 
   const getActiveFiltersCount = () => {
     let count = 0;
+    if (activeFilters.artist && activeFilters.artist !== 'All') count++;
     if (activeFilters.types && activeFilters.types.length > 0) count++;
     if (activeFilters.styles && activeFilters.styles.length > 0) count++;
     if (activeFilters.sizes && activeFilters.sizes.length > 0) count++;
@@ -207,7 +250,7 @@ export default function SearchScreen() {
         onBackPress={() => navigation.goBack()}
       />
 
-      {searchText === '' ? (
+      {(searchText === '' && !artistFilter && !tagFilter) ? (
         <>
           <LastSearches
             searches={lastSearches}

@@ -37,12 +37,18 @@ export default StyleSheet.create({
     marginTop: -12,
   },
   formContainer: {
-    flex: 1,
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
-    marginTop: -20,
+    paddingTop: 20,
+    flex: 1,
+  },
+  formScrollView: {
+    flex: 1,
+  },
+  formScrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   formHeader: {
     flexDirection: 'row',

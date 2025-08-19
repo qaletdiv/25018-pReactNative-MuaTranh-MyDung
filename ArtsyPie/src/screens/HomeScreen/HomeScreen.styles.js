@@ -17,9 +17,9 @@ export default StyleSheet.create({
   sectionTitle: {
     color: COLORS.dark,
     fontSize: 20,
-    fontFamily:FONTS.bold,
-    marginTop: 20,
-    marginBottom: 10,
+    fontFamily: FONTS.bold,
+    marginTop: 24,
+    marginBottom: 12,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -103,8 +103,11 @@ export default StyleSheet.create({
   retryButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
     fontFamily: FONTS.semiBold,
+  },
+  artistsContainer: {
+    paddingHorizontal: 0,
+    paddingVertical: 8,
   },
   // Empty state
   emptyState: {

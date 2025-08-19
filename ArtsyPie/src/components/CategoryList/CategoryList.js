@@ -1,9 +1,21 @@
 // CardList.js
 import React from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import styles from './CategoryList.styles';
 
 const CardList = ({ data }) => {
+  const navigation = useNavigation();
+
+  //console.log('CategoryList received data:', data);
+  //console.log('Navigation object:', navigation); 
+
+  // Kiểm tra navigation có hoạt động không
+  if (!navigation) {
+    //console.error('Navigation is not available in CategoryList');
+    return null;
+  }
+
   const getImageSource = (src) => {
     if (!src) return null;
     
@@ -21,9 +33,81 @@ const CardList = ({ data }) => {
     return src;
   };
 
-  const renderItem = ({ item }) => {
+  // Hàm xử lý khi click vào tag
+  const handleTagPress = (tag) => {
+    //console.log('Tag clicked:', tag);
+    
+    try {
+      let searchTitle = '';
+      let searchType = '';
+      
+      switch (tag) {
+        case 'New':
+          searchTitle = 'New Products';
+          searchType = 'new';
+          break;
+        case 'Hot':
+          searchTitle = 'Hot Products';
+          searchType = 'hot';
+          break;
+        case 'Trending':
+          searchTitle = 'Trending Products';
+          searchType = 'trending';
+          break;
+        default:
+          console.error('Unknown tag:', tag);
+          return;
+      }
+      
+      //console.log('Navigating to SearchScreen with:', { searchTitle, searchType, tagFilter: tag });
+      
+      if (navigation && navigation.navigate) {
+        navigation.navigate('SearchScreen', { 
+          searchTitle,
+          searchType,
+          tagFilter: tag
+        });
+        //console.log('Navigation successful');
+      } else {
+        console.error(' Navigation object is invalid:', navigation);
+      }
+    } catch (error) {
+      console.error('Error in handleTagPress:', error);
+    }
+  };
+
+  // Hàm để xác định tag cho từng item
+  const getItemTag = (item, index) => {
+    //console.log('Getting tag for item:', { id: item.id, title: item.title, index, isNew: item.isNew });
+    
+    let tag = null;
+    // Đảm bảo mỗi item có tag khác nhau dựa trên index
+    if (index === 0) {
+      tag = { tag: 'New', color: '#FFD700' };
+    } else if (index === 1) {
+      tag = { tag: 'Hot', color: '#FF6B6B' };
+    } else if (index === 2) {
+      tag = { tag: 'Trending', color: '#4ECDC4' };
+    }
+    
+    //console.log('Tag result:', tag);
+    return tag;
+  };
+
+  const renderItem = ({ item, index }) => {
+    const itemTag = getItemTag(item, index);
+    
     return (
-      <TouchableOpacity style={styles.cardContainer} activeOpacity={0.8}>
+      <TouchableOpacity 
+        style={styles.cardContainer} 
+        activeOpacity={0.8}
+        onPress={() => {
+          //console.log('Entire card clicked for:', itemTag ? itemTag.tag : 'No tag');
+          if (itemTag) {
+            handleTagPress(itemTag.tag);
+          }
+        }}
+      >
         <View style={{ width: '100%', height: 200, backgroundColor: '#333' }}>
           <Image 
             source={getImageSource(item.image)}
@@ -44,9 +128,9 @@ const CardList = ({ data }) => {
           </View>
         )}
 
-        {item.isNew && (
-          <View style={styles.newTag}>
-            <Text style={styles.newText}>New</Text>
+        {itemTag && (
+          <View style={[styles.tagContainer, { backgroundColor: itemTag.color }]}>
+            <Text style={styles.tagText}>{itemTag.tag}</Text>
           </View>
         )}
 
@@ -77,9 +161,29 @@ const CardList = ({ data }) => {
     return (
       <View style={{ padding: 20, alignItems: 'center' }}>
         <Text style={{ color: '#fff' }}>No catalog data</Text>
+        <TouchableOpacity
+          style={{
+            backgroundColor: 'red',
+            padding: 10,
+            marginTop: 10,
+            borderRadius: 5,
+          }}
+          onPress={() => {
+            if (navigation && navigation.navigate) {
+              navigation.navigate('SearchScreen', { 
+                searchTitle: 'Test Products',
+                tagFilter: 'Test'
+              });
+            }
+          }}
+        >
+          <Text style={{ color: 'white' }}>Test Navigation</Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
+  //console.log('Catalog data available, length:', data.length); 
 
   return (
     <FlatList
